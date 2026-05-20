@@ -2,7 +2,7 @@ generator client {
   provider = "prisma-client-js"
 }
 datasource db {
-  provider = "sqlserver"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 model Client {
@@ -37,6 +37,6 @@ model Sequence {
   goal        String
   energy      String
   cycleNumber Int      @default(1)
-  poses       String   @db.NVarChar(Max)
+  poses       String   @db.Text
   createdAt   DateTime @default(now())
 }
