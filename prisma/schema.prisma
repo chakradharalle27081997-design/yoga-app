@@ -23,6 +23,8 @@ model Client {
   angerLevel    String  @default("")
   mealType      String  @default("")
   stayType      String  @default("")
+  phone         String  @default("")
+  pin           String  @default("")
   sequences  Sequence[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
