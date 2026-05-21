@@ -246,3 +246,5 @@ tr:hover td { background: #fafaf8; }
 
 .nav-brand-text { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: #2D5A1B; }
 .nav-brand-sub { font-size: 0.75rem; font-weight: 400; color: #C17F3A; margin-left: 4px; font-family: 'DM Sans', sans-serif; }
+.student-page { margin-left: 0 !important; }
+@media screen { .app-shell:not(:has(.sidebar)) .content-area { margin-left: 0 !important; } }
