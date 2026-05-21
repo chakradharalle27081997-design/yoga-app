@@ -2,6 +2,8 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { getCycleStatus } from "@/lib/cycleStatus";
 
+export const revalidate = 0;
+
 export const metadata = { title: "Dashboard — IRA Yoga Studio" };
 
 export default async function DashboardPage() {
