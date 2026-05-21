@@ -39,6 +39,7 @@ model Sequence {
   goal        String
   energy      String
   cycleNumber Int      @default(1)
+  asanaCount  Int      @default(6)
   poses       String   @db.Text
   createdAt   DateTime @default(now())
 }

@@ -187,7 +187,7 @@ export default function ClientDetailPage() {
         familyHistory: Array.isArray(data.familyHistory) ? data.familyHistory : [],
         stressLevel: data.stressLevel || "", sleepPattern: data.sleepPattern || "",
         angerLevel: data.angerLevel || "", mealType: data.mealType || "",
-        stayType: data.stayType || "", notes: data.notes || "",
+        stayType: data.stayType || "", notes: data.notes || "", phone: data.phone || "", pin: data.pin || "",
       });
     });
   }, [id]);
@@ -463,6 +463,10 @@ export default function ClientDetailPage() {
             onChange={v => setForm({ ...form, experience: v.toLowerCase() })} />
           <RadioRow label="Meal Type"  options={["Veg","Non Veg"]}          selected={form.mealType} onChange={v => setForm({ ...form, mealType: v })} />
           <RadioRow label="Stay Type"  options={["Family","Flat","Hostel"]} selected={form.stayType} onChange={v => setForm({ ...form, stayType: v })} />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
+                  <div><label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: "0.4rem" }}>Phone Number</label><input className="form-input" type="tel" placeholder="e.g. 9876543210" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ width: "100%" }} /></div>
+                  <div><label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: "0.4rem" }}>Student PIN (4 digits)</label><input className="form-input" type="text" placeholder="e.g. 1234" maxLength={4} value={form.pin} onChange={e => setForm({ ...form, pin: e.target.value })} style={{ width: "100%" }} /></div>
+                </div>
           <div style={{ marginTop: "1.25rem", display: "flex", justifyContent: "space-between" }}>
             <button className="btn btn-outline" onClick={() => setActiveTab("health")}>← Health Profile</button>
             <button className="btn btn-primary" onClick={() => setActiveTab("sequences")}>Next: Sequences →</button>

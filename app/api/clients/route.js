@@ -41,6 +41,8 @@ export async function POST(req) {
         angerLevel:   body.angerLevel   || "",
         mealType:     body.mealType     || "",
         stayType:     body.stayType     || "",
+        phone:        body.phone        || "",
+        pin:          body.pin          || "",
       },
     });
     return NextResponse.json(client, { status: 201 });

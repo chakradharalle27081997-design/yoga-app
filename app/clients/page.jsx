@@ -413,6 +413,7 @@ export default function ClientsPage() {
                           <td style={{ fontSize: "13px" }}>{cycle.status === "none" ? "—" : formatDate(cycle.endDate)}</td>
                           <td>
                             <Link href={"/clients/" + c.id} style={{ color: "var(--text-muted)", fontSize: "18px", textDecoration: "none" }} title="Edit">✏️</Link>
+                            <button onClick={() => deleteClient(c.id)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "18px", marginLeft: "8px" }} title="Delete">🗑️</button>
                           </td>
                         </tr>
                       );

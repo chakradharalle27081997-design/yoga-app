@@ -15,7 +15,7 @@ const PHASE_COLORS = {
   "Pranayama": { bg: "#EEF2FF", border: "#6366F1", label: "#3730A3" },
 };
 
-function AsanaPlanView({ seqData, sequence, onEdit, onPrint, asanaCount, setAsanaCount }) {
+function AsanaPlanView({ seqData, sequence, onEdit, onPrint, asanaCount, setAsanaCount, onSaveCount }) {
   const allPoses = seqData?.phases?.flatMap(p => p.poses) || [];
   const warmupPhase = seqData?.phases?.find(p => p.phase === "Warm-up");
   const asanasPhase = seqData?.phases?.find(p => p.phase === "Asanas");
@@ -48,6 +48,7 @@ function AsanaPlanView({ seqData, sequence, onEdit, onPrint, asanaCount, setAsan
               <span style={{ fontSize: "15px", fontWeight: 700, color: "var(--brand)", minWidth: "20px", textAlign: "center" }}>{asanaCount}</span>
               <button onClick={() => setAsanaCount(c => Math.min(10, c + 1))} style={{ width: 24, height: 24, borderRadius: "50%", border: "1px solid var(--border)", background: "var(--surface)", cursor: "pointer", fontSize: "14px", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
             </div>
+            <button className="btn btn-primary btn-sm" onClick={onSaveCount}>💾 Save</button>
             <button className="btn btn-outline btn-sm" onClick={onEdit}>✏️ Edit</button>
             <button className="btn btn-outline btn-sm" onClick={onPrint}>🖨️ Print</button>
           </div>
@@ -269,7 +270,7 @@ export default function SequenceDetailPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
-  const [asanaCount, setAsanaCount] = useState(6);
+  const [asanaCount, setAsanaCount] = useState(sequence?.asanaCount || 6);
   const [showRegenPanel, setShowRegenPanel] = useState(false);
   const [regenSession, setRegenSession] = useState(null);
 
@@ -277,6 +278,7 @@ export default function SequenceDetailPage() {
     fetch(`/api/sequences/${id}`).then(r => r.json()).then(data => {
       setSequence(data);
       setRegenSession({ duration: data.duration, style: data.style, goal: data.goal, energy: data.energy || "moderate", focusArea: "Full body" });
+      setAsanaCount(data.asanaCount || 6);
       try { setSeqData(JSON.parse(data.poses)); } catch { setSeqData({}); }
     });
   }, [id]);
@@ -350,7 +352,7 @@ export default function SequenceDetailPage() {
       </div>
 
       {tab === "view" && (
-        <AsanaPlanView seqData={seqData} sequence={sequence} asanaCount={asanaCount} setAsanaCount={setAsanaCount} onEdit={() => setTab("edit")} onPrint={() => exportSequencePDF(sequence.client, { ...sequence, poses: seqData }, asanaCount)} />
+        <AsanaPlanView seqData={seqData} sequence={sequence} asanaCount={asanaCount} setAsanaCount={setAsanaCount} onSaveCount={async () => { await fetch(`/api/sequences/${sequence.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...sequence, poses: seqData, asanaCount }) }); alert("Asana count saved!"); }} onEdit={() => setTab("edit")} onPrint={() => exportSequencePDF(sequence.client, { ...sequence, poses: seqData }, asanaCount)} />
       )}
       {tab === "edit" && (
         <EditView seqData={seqData} setSeqData={setSeqData} sequence={sequence} setSequence={setSequence} saving={saving} saved={saved} onSave={handleSave} regenerating={regenerating} showRegenPanel={showRegenPanel} setShowRegenPanel={setShowRegenPanel} regenSession={regenSession} setRegenSession={setRegenSession} onRegenerate={handleRegenerate} />

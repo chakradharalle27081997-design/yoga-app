@@ -33,7 +33,7 @@ export default function StudentDashboard() {
 
   function handlePrint() {
     if (!sequence || !student) return;
-    exportSequencePDF({ name: student.name }, { ...sequence }, 6);
+    exportSequencePDF({ name: student.name }, { ...sequence }, sequence.asanaCount || 6);
   }
 
   if (loading) return (

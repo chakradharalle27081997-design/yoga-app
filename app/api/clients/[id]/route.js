@@ -45,6 +45,8 @@ export async function PUT(req, { params }) {
       angerLevel: body.angerLevel || "",
       mealType: body.mealType || "",
       stayType: body.stayType || "",
+      phone: body.phone || "",
+      pin: body.pin || "",
     },
   });
   return NextResponse.json(parseClient(updated));

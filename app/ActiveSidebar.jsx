@@ -4,6 +4,7 @@ import Link from "next/link";
 
 export default function ActiveSidebar() {
   const pathname = usePathname();
+  if (pathname.startsWith("/student")) return null;
 
   function isActive(href) {
     if (href === "/") return pathname === "/";

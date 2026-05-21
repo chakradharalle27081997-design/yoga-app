@@ -218,6 +218,7 @@ export async function POST(req) {
         goal:        session.goal,
         energy:      session.energy,
         cycleNumber,
+        asanaCount: asanaCount || 6,
         poses:       JSON.stringify(finalSequenceJSON),
       },
       include: { client: true },

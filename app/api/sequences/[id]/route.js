@@ -21,6 +21,7 @@ export async function PUT(req, { params }) {
       goal: body.goal,
       energy: body.energy,
       poses: typeof body.poses === "string" ? body.poses : JSON.stringify(body.poses),
+      asanaCount: body.asanaCount || 6,
     },
   });
   return NextResponse.json(updated);

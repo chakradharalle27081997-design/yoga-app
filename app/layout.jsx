@@ -1,11 +1,9 @@
 import "./globals.css";
 import ActiveSidebar from "./ActiveSidebar";
-
 export const metadata = {
   title: "IRA Yoga Studio",
   description: "AI-powered personalised yoga sequences for your students",
 };
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
