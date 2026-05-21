@@ -130,6 +130,7 @@ function PhaseSelector({ phase, clientInjuries, clientConditions, clientLevel, s
 
 const TABS = [
   { id: "personal",   label: "Personal Info" },
+  { id: "login",      label: "Login Details" },
   { id: "goals",      label: "Goals" },
   { id: "health",     label: "Health Profile" },
   { id: "lifestyle",  label: "Lifestyle & Habits" },
@@ -388,7 +389,7 @@ export default function ClientDetailPage() {
               <input className="form-input" type="date" value={form.joinDate} onChange={e => setForm({ ...form, joinDate: e.target.value })} />
             </div>
           </div>
-          <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end" }}>
+          <div style={{ marginTop: "1rem" }}><SectionTitle>Contact</SectionTitle><div className="form-group"><label className="form-label">Phone Number</label><input className="form-input" type="tel" placeholder="e.g. 9876543210" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} /></div></div><div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end" }}>
             <button className="btn btn-primary" onClick={() => setActiveTab("goals")}>Next: Goals →</button>
           </div>
         </div>
@@ -469,6 +470,30 @@ export default function ClientDetailPage() {
                 </div>
           <div style={{ marginTop: "1.25rem", display: "flex", justifyContent: "space-between" }}>
             <button className="btn btn-outline" onClick={() => setActiveTab("health")}>← Health Profile</button>
+            <button className="btn btn-primary" onClick={() => setActiveTab("sequences")}>Next: Sequences →</button>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "login" && (
+        <div className="card">
+          <SectionTitle>Student Login Details</SectionTitle>
+          <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "1rem" }}>Share these details with your student to access the portal.</p>
+          <div className="grid-2" style={{ gap: "1rem" }}>
+            <div className="form-group">
+              <label className="form-label">Phone Number</label>
+              <input className="form-input" type="tel" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="e.g. 9876543210" />
+            </div>
+            <div className="form-group">
+              <label className="form-label">PIN (4 digits)</label>
+              <input className="form-input" type="text" maxLength={4} value={form.pin} onChange={e => setForm({ ...form, pin: e.target.value })} placeholder="e.g. 1234" />
+            </div>
+          </div>
+          <div style={{ marginTop: "1rem", background: "#E1F5EE", borderRadius: "8px", padding: "0.75rem 1rem" }}>
+            <div style={{ fontSize: "12px", fontWeight: 600, color: "#0F6E56", marginBottom: "4px" }}>Student Portal Link</div>
+            <div style={{ fontSize: "13px", color: "#1D9E75" }}>https://irayoga.vercel.app/student</div>
+          </div>
+          <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end" }}>
             <button className="btn btn-primary" onClick={() => setActiveTab("sequences")}>Next: Sequences →</button>
           </div>
         </div>

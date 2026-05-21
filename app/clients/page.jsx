@@ -254,6 +254,10 @@ export default function ClientsPage() {
                     <input className="form-input" type="date" value={form.joinDate} onChange={e => setForm({ ...form, joinDate: e.target.value })} />
                   </div>
                 </div>
+                <div className="form-group" style={{ marginTop: "1rem" }}>
+                  <label className="form-label">Phone Number</label>
+                  <input className="form-input" type="tel" placeholder="e.g. 9876543210" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} />
+                </div>
                 <div style={{ display: "flex", justifyContent: "flex-end" }}>
                   <button type="button" className="btn btn-primary" onClick={() => setFormTab("goals")}>Next: Goals →</button>
                 </div>
@@ -312,10 +316,6 @@ export default function ClientsPage() {
                 <SectionTitle>Lifestyle & Habits</SectionTitle>
                 <RadioRow label="Meal Type" options={["Veg","Non Veg"]} selected={form.mealType} onChange={v => setForm({ ...form, mealType: v })} />
                 <RadioRow label="Stay Type" options={["Family","Flat","Hostel"]} selected={form.stayType} onChange={v => setForm({ ...form, stayType: v })} />
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "1rem" }}>
-                  <div><label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: "0.4rem" }}>Phone Number</label><input className="form-input" type="tel" placeholder="e.g. 9876543210" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ width: "100%" }} /></div>
-                  <div><label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: "0.4rem" }}>Student PIN (4 digits)</label><input className="form-input" type="text" placeholder="e.g. 1234" maxLength={4} value={form.pin} onChange={e => setForm({ ...form, pin: e.target.value })} style={{ width: "100%" }} /></div>
-                </div>
                 <div style={{ marginTop: "1rem", marginBottom: "1.25rem" }}>
                   <SectionTitle>Additional Notes</SectionTitle>
                   <textarea className="form-textarea" rows={3} placeholder="Any other relevant information..." value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} style={{ width: "100%" }} />
