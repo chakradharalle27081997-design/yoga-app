@@ -341,6 +341,7 @@ export default function ClientDetailPage() {
           <div>
             <h1 className="page-title" style={{ marginBottom: "2px" }}>{client.name}</h1>
             <p className="page-subtitle">Student profile · {seqCount} sequences · {form.experience}</p>
+            {client.phone && <p style={{ fontSize: "13px", color: "var(--text-muted)", marginTop: "2px" }}>📱 {client.phone} · 🔑 PIN: {client.pin || "Not set"}</p>}
           </div>
         </div>
         <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
