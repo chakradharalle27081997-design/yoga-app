@@ -25,6 +25,8 @@ model Client {
   stayType      String  @default("")
   phone         String  @default("")
   pin           String  @default("")
+  testerId   String?
+  tester     Tester?    @relation(fields: [testerId], references: [id])
   sequences  Sequence[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
@@ -54,4 +56,16 @@ model Attendance {
   updatedAt  DateTime @updatedAt
 
   @@unique([clientId, sequenceId, day])
+}
+
+model Tester {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  studioName  String
+  status      String   @default("pending")
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  clients     Client[]
 }

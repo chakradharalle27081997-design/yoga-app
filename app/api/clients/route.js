@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 
-export async function GET() {
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  const testerId = searchParams.get("testerId");
+
+  const where = testerId ? { testerId } : { testerId: null };
+
   const clients = await prisma.client.findMany({
+    where,
     orderBy: { createdAt: "desc" },
     include: {
       _count: { select: { sequences: true } },
@@ -43,6 +49,7 @@ export async function POST(req) {
         stayType:     body.stayType     || "",
         phone:        body.phone        || "",
         pin:          body.pin          || "",
+        testerId:     body.testerId     || null,
       },
     });
     return NextResponse.json(client, { status: 201 });
