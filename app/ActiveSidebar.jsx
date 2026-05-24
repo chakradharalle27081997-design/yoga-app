@@ -43,6 +43,9 @@ export default function ActiveSidebar() {
         <Link href="/attendance" className={"sidebar-link" + (isActive("/attendance") ? " active" : "")}>
           <span className="sidebar-icon">📊</span> Attendance Report
         </Link>
+              <Link href="/admin" className={"sidebar-link" + (isActive("/admin") ? " active" : "")}>
+          <span className="sidebar-icon">🔐</span> Admin Panel
+        </Link>
       </nav>
       <div className="sidebar-footer">
         ✦ Wellness · Balance · Growth ✦
