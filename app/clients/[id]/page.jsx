@@ -1,4 +1,5 @@
 "use client";
+import { exportSequencePDF } from "@/lib/pdfExport";
 import { useState, useEffect } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -232,7 +233,7 @@ export default function ClientDetailPage() {
       const freshClient = await fetch("/api/clients/" + id).then(r => r.json());
       setClient(freshClient);
       setSequence(null);
-      const { exportSequencePDF } = await import("@/lib/pdfExport");
+      
       await exportSequencePDF(freshClient, { ...data.sequence, poses: data.sequence.poses }, asanaCount);
     }
     setGenerating(false);
@@ -277,7 +278,7 @@ export default function ClientDetailPage() {
       setSequence(null);
       const freshClient = await fetch("/api/clients/" + id).then(r => r.json());
       setClient(freshClient);
-      const { exportSequencePDF } = await import("@/lib/pdfExport");
+      
       await exportSequencePDF(freshClient, { ...data.sequence, poses: data.sequence.poses }, asanaCount);
     }
     setManualSaving(false);
