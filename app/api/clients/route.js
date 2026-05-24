@@ -3,9 +3,8 @@ import { prisma } from "@/lib/db";
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
-  const testerId = searchParams.get("testerId");
-
-  const where = testerId ? { testerId } : { testerId: null };
+  const studioId = searchParams.get("studioId");
+  const where = studioId ? { studioId } : { studioId: null };
 
   const clients = await prisma.client.findMany({
     where,
@@ -49,7 +48,7 @@ export async function POST(req) {
         stayType:     body.stayType     || "",
         phone:        body.phone        || "",
         pin:          body.pin          || "",
-        testerId:     body.testerId     || null,
+        studioId:     body.studioId     || null,
       },
     });
     return NextResponse.json(client, { status: 201 });

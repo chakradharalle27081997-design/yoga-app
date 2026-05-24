@@ -5,31 +5,41 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+model Studio {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  clients   Client[]
+}
 model Client {
-  id         String     @id @default(cuid())
-  name       String
-  age        Int
-  gender     String?
-  experience String
-  injuries   String     @default("")
-  conditions String     @default("")
-  notes      String?
-  joinDate   DateTime   @default(now())
-  goals      String     @default("")
-  surgeries  String     @default("")
-  familyHistory String  @default("")
-  stressLevel   String  @default("")
-  sleepPattern  String  @default("")
-  angerLevel    String  @default("")
-  mealType      String  @default("")
-  stayType      String  @default("")
-  phone         String  @default("")
-  pin           String  @default("")
-  testerId   String?
-  tester     Tester?    @relation(fields: [testerId], references: [id])
-  sequences  Sequence[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
+  id            String     @id @default(cuid())
+  name          String
+  age           Int
+  gender        String?
+  experience    String
+  injuries      String     @default("")
+  conditions    String     @default("")
+  notes         String?
+  joinDate      DateTime   @default(now())
+  goals         String     @default("")
+  surgeries     String     @default("")
+  familyHistory String     @default("")
+  stressLevel   String     @default("")
+  sleepPattern  String     @default("")
+  angerLevel    String     @default("")
+  mealType      String     @default("")
+  stayType      String     @default("")
+  phone         String     @default("")
+  pin           String     @default("")
+  studioId      String?
+  studio        Studio?    @relation(fields: [studioId], references: [id])
+  sequences     Sequence[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 model Sequence {
   id          String   @id @default(cuid())
@@ -45,7 +55,6 @@ model Sequence {
   poses       String   @db.Text
   createdAt   DateTime @default(now())
 }
-
 model Attendance {
   id         String   @id @default(cuid())
   clientId   String
@@ -54,18 +63,5 @@ model Attendance {
   attended   Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
   @@unique([clientId, sequenceId, day])
-}
-
-model Tester {
-  id          String   @id @default(cuid())
-  name        String
-  email       String   @unique
-  studioName  String
-  status      String   @default("pending")
-  expiresAt   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  clients     Client[]
 }
