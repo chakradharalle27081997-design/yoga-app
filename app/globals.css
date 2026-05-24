@@ -235,7 +235,12 @@ tr:hover td { background: #fafaf8; }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
+  .mobile-nav { display: flex !important; }
   .sidebar { display: none; }
+  .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; background: #1a3a1a; padding: 8px 0; z-index: 100; justify-content: space-around; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); }
+  .mobile-nav a, .mobile-nav button { display: flex; flex-direction: column; align-items: center; gap: 3px; color: rgba(255,255,255,0.6); font-size: 10px; text-decoration: none; background: none; border: none; cursor: pointer; padding: 4px 12px; }
+  .mobile-nav a.active { color: #F4C87A; }
+  .mobile-nav span.icon { font-size: 20px; }
   .content-area { margin-left: 0; }
   .main { padding: 1.5rem 1.25rem 3rem; }
   .page-title { font-size: 1.75rem; }

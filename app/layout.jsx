@@ -1,6 +1,6 @@
 "use client";
 import "./globals.css";
-import ActiveSidebar from "./ActiveSidebar";
+import ActiveSidebar, { MobileNav } from "./ActiveSidebar";
 import { usePathname } from "next/navigation";
 
 export default function RootLayout({ children }) {
@@ -19,6 +19,7 @@ function LayoutShell({ children }) {
       <ActiveSidebar />
       <div className="content-area">
         <main className="main">{children}</main>
+        <MobileNav />
       </div>
     </div>
   );

@@ -78,3 +78,22 @@ export default function ActiveSidebar() {
     </aside>
   );
 }
+
+export function MobileNav() {
+  const pathname = usePathname();
+  const [isStudio, setIsStudio] = useState(false);
+  useEffect(() => { setIsStudio(!!localStorage.getItem("studioId")); }, [pathname]);
+  if (pathname.startsWith("/student")) return null;
+  if (pathname.startsWith("/studio-login")) return null;
+  function isActive(href) { if (href === "/") return pathname === "/"; return pathname.startsWith(href); }
+  function logout() { localStorage.removeItem("studioId"); localStorage.removeItem("studioName"); localStorage.removeItem("studioEmail"); window.location.href = "/studio-login"; }
+  return (
+    <nav className="mobile-nav" style={{ display: "none" }}>
+      <Link href="/" className={isActive("/") ? "active" : ""}><span className="icon">🏠</span>Dashboard</Link>
+      <Link href="/clients" className={isActive("/clients") ? "active" : ""}><span className="icon">👥</span>Students</Link>
+      <Link href="/attendance" className={isActive("/attendance") ? "active" : ""}><span className="icon">📊</span>Attendance</Link>
+      {!isStudio && <Link href="/admin" className={isActive("/admin") ? "active" : ""}><span className="icon">🔐</span>Admin</Link>}
+      {isStudio && <button onClick={logout}><span className="icon">🚪</span>Logout</button>}
+    </nav>
+  );
+}
