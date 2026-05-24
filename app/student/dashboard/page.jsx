@@ -6,6 +6,7 @@ import { exportSequencePDF } from "@/lib/pdfExport";
 export default function StudentDashboard() {
   const [student, setStudent] = useState(null);
   const [sequences, setSequences] = useState([]);
+  const [attendance, setAttendance] = useState({});
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -17,11 +18,34 @@ export default function StudentDashboard() {
     fetch(`/api/clients/${studentId}`)
       .then(r => r.json())
       .then(data => {
-        if (data && data.sequences) setSequences(data.sequences);
+        if (data && data.sequences) {
+          setSequences(data.sequences);
+          const current = data.sequences.find(s => getPlanStatus(s) === "active");
+          if (current) loadAttendance(studentId, current.id);
+        }
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
+
+  async function loadAttendance(clientId, sequenceId) {
+    const res = await fetch(`/api/attendance?clientId=${clientId}&sequenceId=${sequenceId}`);
+    const records = await res.json();
+    const map = {};
+    records.forEach(r => { map[r.day] = r.attended; });
+    setAttendance(map);
+  }
+
+  async function toggleDay(sequenceId, day) {
+    const clientId = student.id;
+    const newVal = !attendance[day];
+    setAttendance(prev => ({ ...prev, [day]: newVal }));
+    await fetch("/api/attendance", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clientId, sequenceId, day, attended: newVal })
+    });
+  }
 
   function handleLogout() {
     localStorage.removeItem("studentId");
@@ -51,6 +75,7 @@ export default function StudentDashboard() {
 
   const currentPlan = sequences.find(s => getPlanStatus(s) === "active");
   const pastPlans = sequences.filter(s => getPlanStatus(s) === "completed");
+  const attendedCount = Object.values(attendance).filter(Boolean).length;
 
   if (loading) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f7f4" }}>
@@ -89,6 +114,7 @@ export default function StudentDashboard() {
               </div>
               <span style={{ background: "#E1F5EE", color: "#0F6E56", fontSize: "0.75rem", fontWeight: 600, padding: "4px 10px", borderRadius: "999px" }}>🟢 Active</span>
             </div>
+
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "1.25rem" }}>
               <div style={{ background: "#f9fafb", borderRadius: "10px", padding: "0.75rem" }}>
                 <div style={{ fontSize: "0.75rem", color: "#6b7280", marginBottom: "2px" }}>Goal</div>
@@ -99,6 +125,37 @@ export default function StudentDashboard() {
                 <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a2018" }}>{currentPlan.energy}</div>
               </div>
             </div>
+
+            {/* Attendance Tracker */}
+            <div style={{ background: "#f9fafb", borderRadius: "12px", padding: "1rem", marginBottom: "1.25rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "#1a2018" }}>📅 Attendance</div>
+                <div style={{ fontSize: "0.8rem", color: "#1D9E75", fontWeight: 600 }}>{attendedCount}/10 days</div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "0.5rem" }}>
+                {Array.from({ length: 10 }, (_, i) => {
+                  const day = i + 1;
+                  const done = attendance[day];
+                  const date = new Date(getPlanDates(currentPlan).start);
+                  date.setDate(date.getDate() + i);
+                  const dateStr = date.toLocaleDateString("en-IN", { day: "2-digit", month: "short" });
+                  return (
+                    <button key={day} onClick={() => toggleDay(currentPlan.id, day)}
+                      style={{ background: done ? "#1D9E75" : "white", border: `2px solid ${done ? "#1D9E75" : "#e5e7eb"}`, borderRadius: "10px", padding: "0.5rem", cursor: "pointer", textAlign: "center", transition: "all 0.2s" }}>
+                      <div style={{ fontSize: "1rem" }}>{done ? "✅" : "⬜"}</div>
+                      <div style={{ fontSize: "0.65rem", fontWeight: 600, color: done ? "white" : "#6b7280", marginTop: "2px" }}>Day {day}</div>
+                      <div style={{ fontSize: "0.6rem", color: done ? "rgba(255,255,255,0.8)" : "#9ca3af" }}>{dateStr}</div>
+                    </button>
+                  );
+                })}
+              </div>
+              {attendedCount === 10 && (
+                <div style={{ textAlign: "center", marginTop: "0.75rem", fontSize: "0.9rem", color: "#1D9E75", fontWeight: 700 }}>
+                  🎉 Amazing! You completed all 10 days!
+                </div>
+              )}
+            </div>
+
             <button onClick={() => handlePrint(currentPlan)} style={{ width: "100%", padding: "0.85rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "10px", fontSize: "1rem", fontWeight: 700, cursor: "pointer" }}>
               🖨️ Print / Download My Plan
             </button>

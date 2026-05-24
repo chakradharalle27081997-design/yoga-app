@@ -43,3 +43,15 @@ model Sequence {
   poses       String   @db.Text
   createdAt   DateTime @default(now())
 }
+
+model Attendance {
+  id         String   @id @default(cuid())
+  clientId   String
+  sequenceId String
+  day        Int
+  attended   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([clientId, sequenceId, day])
+}
