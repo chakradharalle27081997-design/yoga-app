@@ -1,10 +1,7 @@
+"use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { prisma } from "@/lib/db";
 import { getCycleStatus } from "@/lib/cycleStatus";
-
-export const revalidate = 0;
-
-export const metadata = { title: "Dashboard — IRA Yoga Studio" };
 
 const quotes = [
   { sanskrit: "योगः चित्त-वृत्ति निरोधः", transliteration: "Yogaḥ citta-vṛtti nirodhaḥ", meaning: "Yoga is the stilling of the fluctuations of the mind." },
@@ -16,43 +13,30 @@ const quotes = [
   { sanskrit: "शनैः शनैः उपरमेत्", transliteration: "Śanaiḥ śanaiḥ uparamet", meaning: "Little by little, let one come to rest." },
 ];
 
-export default async function DashboardPage() {
+function formatDate(date) {
+  if (!date) return "—";
+  return new Date(date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
+}
+
+export default function DashboardPage() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const today = new Date().toLocaleDateString("en-IN", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
-  const dayIndex = new Date().getDay();
-  const quote = quotes[dayIndex];
+  const quote = quotes[new Date().getDay()];
 
-  const [clientCount, sequenceCount, clients] = await Promise.all([
-    prisma.client.count(),
-    prisma.sequence.count(),
-    prisma.client.findMany({
-      orderBy: { createdAt: "desc" },
-      include: {
-        _count: { select: { sequences: true } },
-        sequences: { take: 1, orderBy: { createdAt: "desc" } },
-      },
-    }),
-  ]);
+  useEffect(() => {
+    const studioId = localStorage.getItem("studioId");
+    const url = "/api/dashboard" + (studioId ? "?studioId=" + studioId : "");
+    fetch(url).then(r => r.json()).then(d => { setData(d); setLoading(false); });
+  }, []);
 
-  const attendanceMap = {};
-  await Promise.all(clients.map(async (c) => {
-    const seq = c.sequences[0];
-    if (!seq) return;
-    const records = await prisma.attendance.findMany({
-      where: { clientId: c.id, sequenceId: seq.id },
-    });
-    attendanceMap[c.id] = records.filter(r => r.attended).length;
-  }));
+  if (loading) return <div style={{ padding: "3rem", textAlign: "center", color: "var(--text-muted)" }}>Loading dashboard...</div>;
 
-  function formatDate(date) {
-    if (!date) return "—";
-    return new Date(date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }).toUpperCase();
-  }
-
+  const { clientCount, sequenceCount, clients, attendanceMap } = data;
   const needRenewal = clients.filter(c => getCycleStatus(c).status === "ended");
 
   return (
     <div>
-      {/* Welcome Banner */}
       <div className="welcome-banner" style={{ marginBottom: "1.75rem" }}>
         <div className="welcome-text">
           <h2>Welcome to IRA Yoga Studio 🙏</h2>
@@ -66,7 +50,6 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Stat Cards */}
       <div className="stats-row">
         <Link href="/clients" style={{ textDecoration: "none" }}>
           <div className="stat-card">
@@ -88,14 +71,13 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      {/* Quick Links */}
       <div style={{ display: "flex", gap: "1rem", marginBottom: "1.75rem", flexWrap: "wrap" }}>
         <Link href="/attendance" style={{ textDecoration: "none", flex: 1, minWidth: "200px" }}>
           <div style={{ background: "white", border: "1px solid var(--border)", borderRadius: "12px", padding: "1rem 1.25rem", display: "flex", alignItems: "center", gap: "0.75rem", cursor: "pointer" }}>
             <span style={{ fontSize: "1.5rem" }}>📊</span>
             <div>
               <div style={{ fontWeight: 700, fontSize: "0.95rem", color: "var(--brand)" }}>Attendance Report</div>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>View all students' attendance</div>
+              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>View all students attendance</div>
             </div>
             <span style={{ marginLeft: "auto", color: "var(--text-muted)", fontSize: "1.1rem" }}>→</span>
           </div>
@@ -122,7 +104,6 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {/* Renewal Alert */}
       {needRenewal.length > 0 && (
         <div style={{ background: "#FFFBEB", border: "1px solid #F59E0B", borderRadius: "12px", padding: "1.25rem 1.5rem", marginBottom: "1.75rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
@@ -154,7 +135,6 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Students Table */}
       <div className="card" style={{ marginBottom: "1.5rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
           <h2 style={{ fontSize: "1.05rem", fontWeight: 600 }}>My Yoga Students</h2>

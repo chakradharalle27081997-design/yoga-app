@@ -1,35 +1,16 @@
-import { prisma } from "@/lib/db";
+"use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
-export const revalidate = 0;
+export default function AttendancePage() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-async function getAttendanceData() {
-  const clients = await prisma.client.findMany({
-    orderBy: { name: "asc" },
-    include: {
-      sequences: {
-        orderBy: { createdAt: "desc" },
-        take: 1,
-      },
-    },
-  });
-
-  const attendanceData = await Promise.all(clients.map(async (client) => {
-    const currentSeq = client.sequences[0];
-    if (!currentSeq) return { client, attended: 0, total: 0, records: [] };
-    const records = await prisma.attendance.findMany({
-      where: { clientId: client.id, sequenceId: currentSeq.id },
-      orderBy: { day: "asc" },
-    });
-    const attended = records.filter(r => r.attended).length;
-    return { client, sequence: currentSeq, attended, total: 10, records };
-  }));
-
-  return attendanceData;
-}
-
-export default async function AttendancePage() {
-  const data = await getAttendanceData();
+  useEffect(() => {
+    const studioId = localStorage.getItem("studioId");
+    const url = "/api/attendance-report" + (studioId ? "?studioId=" + studioId : "");
+    fetch(url).then(r => r.json()).then(d => { setData(d); setLoading(false); });
+  }, []);
 
   function formatDate(d) {
     return new Date(d).toLocaleDateString("en-IN", { day: "2-digit", month: "short" }).toUpperCase();
@@ -41,6 +22,8 @@ export default async function AttendancePage() {
     end.setDate(end.getDate() + 9);
     return { start, end };
   }
+
+  if (loading) return <div style={{ padding: "3rem", textAlign: "center", color: "var(--text-muted)" }}>Loading attendance...</div>;
 
   return (
     <div>
@@ -104,7 +87,7 @@ export default async function AttendancePage() {
                       {sequence ? (
                         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                           <div style={{ flex: 1, height: "8px", background: "#e5e7eb", borderRadius: "999px", minWidth: "80px" }}>
-                            <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: "999px", transition: "width 0.3s" }} />
+                            <div style={{ width: `${pct}%`, height: "100%", background: color, borderRadius: "999px" }} />
                           </div>
                           <span style={{ fontSize: "12px", fontWeight: 600, color }}>{pct}%</span>
                         </div>
@@ -130,6 +113,9 @@ export default async function AttendancePage() {
                   </tr>
                 );
               })}
+              {data.length === 0 && (
+                <tr><td colSpan="7" style={{ textAlign: "center", padding: "2rem", color: "var(--text-muted)" }}>No students yet</td></tr>
+              )}
             </tbody>
           </table>
         </div>

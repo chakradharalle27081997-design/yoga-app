@@ -1,13 +1,31 @@
 "use client";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+
 export default function ActiveSidebar() {
   const pathname = usePathname();
+  const [isStudio, setIsStudio] = useState(false);
+
+  useEffect(() => {
+    setIsStudio(!!localStorage.getItem("studioId"));
+  }, [pathname]);
+
   if (pathname.startsWith("/student")) return null;
+  if (pathname.startsWith("/studio-login")) return null;
+
   function isActive(href) {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   }
+
+  function logout() {
+    localStorage.removeItem("studioId");
+    localStorage.removeItem("studioName");
+    localStorage.removeItem("studioEmail");
+    window.location.href = "/studio-login";
+  }
+
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -43,9 +61,16 @@ export default function ActiveSidebar() {
         <Link href="/attendance" className={"sidebar-link" + (isActive("/attendance") ? " active" : "")}>
           <span className="sidebar-icon">📊</span> Attendance Report
         </Link>
-              <Link href="/admin" className={"sidebar-link" + (isActive("/admin") ? " active" : "")}>
-          <span className="sidebar-icon">🔐</span> Admin Panel
-        </Link>
+        {!isStudio && (
+          <Link href="/admin" className={"sidebar-link" + (isActive("/admin") ? " active" : "")}>
+            <span className="sidebar-icon">🔐</span> Admin Panel
+          </Link>
+        )}
+        {isStudio && (
+          <button onClick={logout} style={{ background: "none", border: "none", cursor: "pointer", padding: "10px 16px", color: "#c0392b", fontSize: "14px", textAlign: "left", width: "100%", display: "flex", alignItems: "center", gap: "8px" }}>
+            🚪 Logout
+          </button>
+        )}
       </nav>
       <div className="sidebar-footer">
         ✦ Wellness · Balance · Growth ✦

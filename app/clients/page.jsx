@@ -127,7 +127,9 @@ export default function ClientsPage() {
 
   async function fetchClients() {
     setLoading(true);
-    const res  = await fetch("/api/clients");
+    const studioId = localStorage.getItem("studioId");
+    const url = studioId ? "/api/clients?studioId=" + studioId : "/api/clients";
+    const res  = await fetch(url);
     const data = await res.json();
     setClients(data);
     setLoading(false);
@@ -146,7 +148,7 @@ export default function ClientsPage() {
     if (!form.name || !form.age) { setFormTab("personal"); return setError("Name and age are required."); }
     setSaving(true); setError("");
     const res = await fetch("/api/clients", {
-      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form),
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, studioId: localStorage.getItem("studioId") || null }),
     });
     if (res.ok) { setShowForm(false); setForm(EMPTY_FORM); fetchClients(); }
     else { const d = await res.json(); setError(d.error || "Failed to save."); }
