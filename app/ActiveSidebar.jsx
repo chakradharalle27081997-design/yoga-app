@@ -1,16 +1,13 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-
 export default function ActiveSidebar() {
   const pathname = usePathname();
   if (pathname.startsWith("/student")) return null;
-
   function isActive(href) {
     if (href === "/") return pathname === "/";
     return pathname.startsWith(href);
   }
-
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
@@ -35,7 +32,6 @@ export default function ActiveSidebar() {
           <span className="logo-sub">Yoga Studio</span>
         </div>
       </div>
-
       <nav className="sidebar-nav">
         <p className="sidebar-section">Navigation</p>
         <Link href="/" className={"sidebar-link" + (isActive("/") ? " active" : "")}>
@@ -44,8 +40,10 @@ export default function ActiveSidebar() {
         <Link href="/clients" className={"sidebar-link" + (isActive("/clients") ? " active" : "")}>
           <span className="sidebar-icon">👥</span> My Students
         </Link>
+        <Link href="/attendance" className={"sidebar-link" + (isActive("/attendance") ? " active" : "")}>
+          <span className="sidebar-icon">📊</span> Attendance Report
+        </Link>
       </nav>
-
       <div className="sidebar-footer">
         ✦ Wellness · Balance · Growth ✦
       </div>

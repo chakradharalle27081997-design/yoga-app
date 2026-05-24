@@ -111,6 +111,8 @@ export default function ClientsPage() {
   const [error, setError]       = useState("");
   const [form, setForm]         = useState(EMPTY_FORM);
   const [sortCol, setSortCol]   = useState("name");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [sortDir, setSortDir]   = useState("asc");
 
   // Pagination state
@@ -174,7 +176,13 @@ export default function ClientsPage() {
     return 0;
   }
 
-  const sorted = [...clients].sort((a, b) => {
+  const filtered = clients.filter(c => {
+    const matchSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase()) || (c.phone || "").includes(searchTerm);
+    const status = getCycleStatus(c).status;
+    const matchStatus = statusFilter === "all" || (statusFilter === "active" && status === "active") || (statusFilter === "ended" && status === "ended") || (statusFilter === "none" && status === "none");
+    return matchSearch && matchStatus;
+  });
+  const sorted = [...filtered].sort((a, b) => {
     const av = getSortValue(a, sortCol);
     const bv = getSortValue(b, sortCol);
     return sortDir === "asc" ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
@@ -201,6 +209,27 @@ export default function ClientsPage() {
           <h1 className="page-title">My Students</h1>
           <p className="page-subtitle">{clients.length} student{clients.length !== 1 ? "s" : ""} registered</p>
         </div>
+      </div>
+
+      {/* Search and Filter */}
+      <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.25rem", flexWrap: "wrap" }}>
+        <input
+          type="text"
+          placeholder="🔍 Search by name or phone..."
+          value={searchTerm}
+          onChange={e => { setSearchTerm(e.target.value); setPage(1); }}
+          style={{ flex: 1, minWidth: "200px", padding: "0.6rem 1rem", borderRadius: "8px", border: "1.5px solid var(--border)", fontSize: "0.9rem", outline: "none" }}
+        />
+        <select
+          value={statusFilter}
+          onChange={e => { setStatusFilter(e.target.value); setPage(1); }}
+          style={{ padding: "0.6rem 1rem", borderRadius: "8px", border: "1.5px solid var(--border)", fontSize: "0.9rem", background: "white", cursor: "pointer" }}
+        >
+          <option value="all">All Students</option>
+          <option value="active">🟢 Active</option>
+          <option value="ended">🔴 Need Renewal</option>
+          <option value="none">⚪ No Plan</option>
+        </select>
       </div>
 
       {/* ── Add Student Form ── */}
