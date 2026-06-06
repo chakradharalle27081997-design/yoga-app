@@ -87,6 +87,25 @@ function AsanaPlanView({ seqData, sequence, onEdit, onPrint, asanaCount, setAsan
       )}
 
       {/* Asana card grid */}
+      
+      {/* Surya Namaskar Banner */}
+      {(() => {
+        const severeConditions = ['High Blood Pressure', 'Heart Condition', 'Slipped Disk'];
+        const conditions = Array.isArray(sequence.client?.conditions) ? sequence.client.conditions : (sequence.client?.conditions || '').split(',').filter(Boolean);
+        const injuries = Array.isArray(sequence.client?.injuries) ? sequence.client.injuries : (sequence.client?.injuries || '').split(',').filter(Boolean);
+        const hasSevere = [...conditions, ...injuries].some(c => severeConditions.includes(c));
+        const isBeginnerCycle1 = sequence.client?.experience === 'beginner' && (sequence.cycleNumber || 1) === 1;
+        return (
+          <div style={{ background: 'linear-gradient(135deg, #FFF7ED, #FFFBEB)', border: '1.5px solid #F59E0B', borderRadius: '12px', padding: '1rem 1.25rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div style={{ fontSize: '2rem' }}>🌅</div>
+            <div>
+              <div style={{ fontSize: '14px', fontWeight: 700, color: '#92400E', marginBottom: '3px' }}>Surya Namaskar — Before Asanas</div>
+              <div style={{ fontSize: '13px', color: '#B45309' }}>Practice Surya Namaskar before starting your asanas. Begin with <strong>12 rounds daily</strong> and increase gradually as per your capacity.</div>
+            </div>
+          </div>
+        );
+      })()}
+
       {asanasPhase && asanasPhase.poses.length > 0 && (
         <div style={{ marginBottom: "1.5rem" }}>
           <div style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "var(--green)", marginBottom: "0.75rem" }}>

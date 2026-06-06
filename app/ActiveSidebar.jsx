@@ -61,6 +61,9 @@ export default function ActiveSidebar() {
         <Link href="/attendance" className={"sidebar-link" + (isActive("/attendance") ? " active" : "")}>
           <span className="sidebar-icon">📊</span> Attendance Report
         </Link>
+        <Link href="/poses" className={"sidebar-link" + (isActive("/poses") ? " active" : "")}>
+          <span className="sidebar-icon">🧘</span> Pose Library
+        </Link>
         {isStudio === true && localStorage.getItem("studioId") === "owner" && (
           <Link href="/admin" className={"sidebar-link" + (isActive("/admin") ? " active" : "")}>
             <span className="sidebar-icon">🔐</span> Admin Panel

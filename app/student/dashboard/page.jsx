@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { exportSequencePDF } from "@/lib/pdfExport";
+import { getPoseImage } from "@/lib/poseImages";
 
 export default function StudentDashboard() {
   const [student, setStudent] = useState(null);
@@ -11,6 +12,7 @@ export default function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [moodMap, setMoodMap] = useState({});
   const [showMood, setShowMood] = useState(false);
+  const [selectedPose, setSelectedPose] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -30,8 +32,6 @@ export default function StudentDashboard() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-
-    // Load mood from localStorage
     const savedMood = JSON.parse(localStorage.getItem("moodMap") || "{}");
     setMoodMap(savedMood);
   }, []);
@@ -87,7 +87,6 @@ export default function StudentDashboard() {
     return Math.max(0, diff);
   }
 
-  // Streak counter — consecutive days from day 1
   function getStreak() {
     let streak = 0;
     for (let i = 1; i <= 10; i++) {
@@ -139,6 +138,30 @@ export default function StudentDashboard() {
     win.document.close();
   }
 
+  function getPoses(seq) {
+    try {
+      const data = typeof seq.poses === "string" ? JSON.parse(seq.poses) : seq.poses;
+      return data?.phases?.find(p => p.phase === "Asanas")?.poses || [];
+    } catch { return []; }
+  }
+
+  function getWarmupPoses(seq) {
+    try {
+      const data = typeof seq.poses === "string" ? JSON.parse(seq.poses) : seq.poses;
+      return data?.phases?.find(p => p.phase === "Warm-up")?.poses || [];
+    } catch { return []; }
+  }
+
+  function showSuryaBanner(seq) {
+    if (!clientData) return false;
+    const severeConditions = ["High Blood Pressure", "Heart Condition", "Slipped Disk"];
+    const conditions = Array.isArray(clientData.conditions) ? clientData.conditions : (clientData.conditions || "").split(",").filter(Boolean);
+    const injuries = Array.isArray(clientData.injuries) ? clientData.injuries : (clientData.injuries || "").split(",").filter(Boolean);
+    const hasSevere = [...conditions, ...injuries].some(c => severeConditions.includes(c));
+    const isBeginnerCycle1 = clientData.experience === "beginner" && (seq.cycleNumber || 1) === 1;
+    return !hasSevere && !isBeginnerCycle1;
+  }
+
   const currentPlan = sequences.find(s => getPlanStatus(s) === "active");
   const pastPlans = sequences.filter(s => getPlanStatus(s) === "completed");
   const attendedCount = Object.values(attendance).filter(Boolean).length;
@@ -149,8 +172,9 @@ export default function StudentDashboard() {
     const diff = Math.floor((new Date() - start) / (1000 * 60 * 60 * 24));
     return Math.min(diff + 1, 10);
   })() : 0;
-  const instructorPhone = clientData?.phone ? clientData.phone : null;
   const MOODS = ["😔", "😐", "🙂", "😊", "🤩"];
+  const levelColor = { beginner: "#1D9E75", intermediate: "#F59E0B", advanced: "#DC2626" };
+  const levelBg = { beginner: "#E1F5EE", intermediate: "#FFFBEB", advanced: "#FEF2F2" };
 
   if (loading) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f7f4" }}>
@@ -243,6 +267,52 @@ export default function StudentDashboard() {
               </div>
             </div>
 
+            {/* Warmup Section */}
+            {getWarmupPoses(currentPlan).length > 0 && (
+              <div style={{ background: "#FFF7ED", borderRadius: "12px", padding: "1rem", marginBottom: "1rem" }}>
+                <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "#92400E", marginBottom: "0.5rem" }}>🔥 Warm-up</div>
+                <div style={{ fontSize: "0.82rem", color: "#B45309" }}>
+                  {getWarmupPoses(currentPlan).map(p => p.name).join(" · ")}
+                </div>
+              </div>
+            )}
+
+            {/* Surya Namaskar Banner */}
+            {showSuryaBanner(currentPlan) && (
+              <div style={{ background: "linear-gradient(135deg, #FFF7ED, #FFFBEB)", border: "1.5px solid #F59E0B", borderRadius: "12px", padding: "1rem", marginBottom: "1rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                <div style={{ fontSize: "2rem" }}>🌅</div>
+                <div>
+                  <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "#92400E", marginBottom: "3px" }}>Surya Namaskar — Before Asanas</div>
+                  <div style={{ fontSize: "0.8rem", color: "#B45309" }}>Practice Surya Namaskar before starting your asanas. Begin with <strong>12 rounds daily</strong> and increase gradually as per your capacity.</div>
+                </div>
+              </div>
+            )}
+
+            {/* Asana Poses */}
+            {getPoses(currentPlan).length > 0 && (
+              <div style={{ marginBottom: "1.25rem" }}>
+                <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "#1a2018", marginBottom: "0.75rem" }}>🧘 Your Asanas</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0.75rem" }}>
+                  {getPoses(currentPlan).map((pose, i) => {
+                    const imgSrc = getPoseImage(pose.name);
+                    return (
+                      <div key={i} onClick={() => setSelectedPose(pose)}
+                        style={{ background: "#f9fafb", borderRadius: "12px", overflow: "hidden", border: "1px solid #e5e7eb", cursor: "pointer" }}>
+                        {imgSrc
+                          ? <img src={imgSrc} alt={pose.name} style={{ width: "100%", height: "110px", objectFit: "contain", background: "white", display: "block" }} />
+                          : <div style={{ width: "100%", height: "110px", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem" }}>🧘</div>
+                        }
+                        <div style={{ padding: "0.5rem 0.6rem" }}>
+                          <div style={{ fontSize: "0.72rem", fontWeight: 700, color: "#1a2018" }}>{pose.name}</div>
+                          {pose.duration && <div style={{ fontSize: "0.65rem", color: "#6b7280", marginTop: "2px" }}>⏱ {pose.duration}</div>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Attendance Tracker */}
             <div style={{ background: "#f9fafb", borderRadius: "12px", padding: "1rem", marginBottom: "1.25rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
@@ -266,13 +336,9 @@ export default function StudentDashboard() {
                   );
                 })}
               </div>
-
-              {/* Completion */}
               {attendedCount === 10 && (
                 <div style={{ textAlign: "center", marginTop: "1rem" }}>
-                  <div style={{ fontSize: "0.95rem", color: "#1D9E75", fontWeight: 700, marginBottom: "0.5rem" }}>
-                    🎉 Amazing! You completed all 10 days!
-                  </div>
+                  <div style={{ fontSize: "0.95rem", color: "#1D9E75", fontWeight: 700, marginBottom: "0.5rem" }}>🎉 Amazing! You completed all 10 days!</div>
                   <button onClick={handleDownloadCertificate}
                     style={{ background: "#1D9E75", color: "white", border: "none", borderRadius: "8px", padding: "8px 20px", fontSize: "0.85rem", fontWeight: 700, cursor: "pointer" }}>
                     🏆 Download Certificate
@@ -285,7 +351,6 @@ export default function StudentDashboard() {
               🖨️ Print / Download My Plan
             </button>
 
-            {/* WhatsApp Contact */}
             <a href={`https://wa.me/917996272792?text=Hi%20IRA%20Yoga%20Studio%2C%20I%20am%20${encodeURIComponent(student?.name || "")}%20and%20I%20need%20help%20with%20my%20yoga%20plan.`}
               target="_blank" rel="noopener noreferrer"
               style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", width: "100%", padding: "0.75rem", background: "#25D366", color: "white", border: "none", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 700, cursor: "pointer", textDecoration: "none" }}>
@@ -326,6 +391,45 @@ export default function StudentDashboard() {
           IRA Yoga Studio · Contact your instructor for support
         </p>
       </div>
+
+      {/* Pose Detail Popup */}
+      {selectedPose && (
+        <div onClick={() => setSelectedPose(null)}
+          style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+          <div onClick={e => e.stopPropagation()}
+            style={{ background: "white", borderRadius: "16px", maxWidth: "420px", width: "100%", maxHeight: "85vh", overflow: "auto" }}>
+            {getPoseImage(selectedPose.name)
+              ? <img src={getPoseImage(selectedPose.name)} alt={selectedPose.name} style={{ width: "100%", height: "200px", objectFit: "contain", background: "#f9fafb", borderRadius: "16px 16px 0 0" }} />
+              : <div style={{ width: "100%", height: "200px", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "4rem", borderRadius: "16px 16px 0 0" }}>🧘</div>
+            }
+            <div style={{ padding: "1.25rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "1rem" }}>
+                <div>
+                  <h2 style={{ fontSize: "1rem", fontWeight: 800, color: "#C0392B" }}>{selectedPose.name}</h2>
+                  {selectedPose.duration && <p style={{ fontSize: "0.8rem", color: "#6b7280" }}>⏱ {selectedPose.duration}</p>}
+                </div>
+                <button onClick={() => setSelectedPose(null)} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", color: "#6b7280" }}>✕</button>
+              </div>
+              {selectedPose.cues && (
+                <div style={{ background: "#f9fafb", borderRadius: "10px", padding: "0.75rem 1rem", marginBottom: "0.75rem" }}>
+                  <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#1a2018", marginBottom: "6px" }}>📋 How to do</div>
+                  <ol style={{ paddingLeft: "1.2rem", margin: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
+                    {String(selectedPose.cues || "").split(".").filter(s => s.trim()).map((step, i) => (
+                      <li key={i} style={{ fontSize: "0.82rem", color: "#374151", lineHeight: 1.6 }}>{step.trim()}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {selectedPose.benefits && (
+                <div style={{ background: "#E1F5EE", borderRadius: "10px", padding: "0.75rem 1rem" }}>
+                  <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#0F6E56", marginBottom: "4px" }}>✨ Benefits</div>
+                  <p style={{ fontSize: "0.82rem", color: "#0F6E56" }}>{selectedPose.benefits}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
