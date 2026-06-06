@@ -148,7 +148,8 @@ export default function StudentDashboard() {
   function getWarmupPoses(seq) {
     try {
       const data = typeof seq.poses === "string" ? JSON.parse(seq.poses) : seq.poses;
-      return data?.phases?.find(p => p.phase === "Warm-up")?.poses || [];
+      const wp = data?.phases?.find(p => p.phase === "Warm-up")?.poses || [];
+      return wp.filter(p => !p.name?.toLowerCase().includes("surya") && !p.name?.toLowerCase().includes("sun salutation"));
     } catch { return []; }
   }
 
@@ -292,7 +293,7 @@ export default function StudentDashboard() {
             {getPoses(currentPlan).length > 0 && (
               <div style={{ marginBottom: "1.25rem" }}>
                 <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "#1a2018", marginBottom: "0.75rem" }}>🧘 Your Asanas</div>
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0.75rem" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.75rem" }}>
                   {getPoses(currentPlan).map((pose, i) => {
                     const imgSrc = getPoseImage(pose.name);
                     return (
