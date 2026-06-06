@@ -40,6 +40,16 @@ model Client {
   sequences     Sequence[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+  height        String     @default("")
+  weight        String     @default("")
+  occupation    String     @default("")
+  conditionDetails String  @default("")
+  surgeryDetails   String  @default("")
+  injuryDetails    String  @default("")
+  mentalHealthDetails String @default("")
+  womenHealthDetails  String @default("")
+  medicationDetails   String @default("")
+  registrationStatus  String @default("approved")
 }
 model Sequence {
   id          String   @id @default(cuid())

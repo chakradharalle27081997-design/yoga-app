@@ -47,6 +47,7 @@ export async function PUT(req, { params }) {
       stayType: body.stayType || "",
       phone: body.phone || "",
       pin: body.pin || "",
+      registrationStatus: body.registrationStatus || "approved",
     },
   });
   return NextResponse.json(parseClient(updated));

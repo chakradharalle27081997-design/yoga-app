@@ -7,6 +7,7 @@ export async function GET(req) {
   const where = studioId ? { studioId } : { studioId: null };
 
   const clients = await prisma.client.findMany({
+    where: { registrationStatus: { not: "pending" } },
     where,
     orderBy: { createdAt: "desc" },
     include: {
