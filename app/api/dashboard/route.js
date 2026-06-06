@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const studioId = searchParams.get("studioId");
-  const where = studioId ? { studioId } : { studioId: null };
+  const where = (!studioId || studioId === "owner") ? {} : { studioId };
   const approvedWhere = { ...where, registrationStatus: { not: "pending" } };
 
   const [clientCount, sequenceCount, clients, pendingCount, pendingClients] = await Promise.all([

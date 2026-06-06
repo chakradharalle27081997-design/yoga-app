@@ -61,12 +61,12 @@ export default function ActiveSidebar() {
         <Link href="/attendance" className={"sidebar-link" + (isActive("/attendance") ? " active" : "")}>
           <span className="sidebar-icon">📊</span> Attendance Report
         </Link>
-        {!isStudio && (
+        {isStudio === true && localStorage.getItem("studioId") === "owner" && (
           <Link href="/admin" className={"sidebar-link" + (isActive("/admin") ? " active" : "")}>
             <span className="sidebar-icon">🔐</span> Admin Panel
           </Link>
         )}
-        {isStudio && (
+        {!!localStorage.getItem("studioId") && (
           <button onClick={logout} style={{ background: "none", border: "none", cursor: "pointer", padding: "10px 16px", color: "#c0392b", fontSize: "14px", textAlign: "left", width: "100%", display: "flex", alignItems: "center", gap: "8px" }}>
             🚪 Logout
           </button>
@@ -92,8 +92,8 @@ export function MobileNav() {
       <Link href="/" className={isActive("/") ? "active" : ""}><span className="icon">🏠</span>Dashboard</Link>
       <Link href="/clients" className={isActive("/clients") ? "active" : ""}><span className="icon">👥</span>Students</Link>
       <Link href="/attendance" className={isActive("/attendance") ? "active" : ""}><span className="icon">📊</span>Attendance</Link>
-      {!isStudio && <Link href="/admin" className={isActive("/admin") ? "active" : ""}><span className="icon">🔐</span>Admin</Link>}
-      {isStudio && <button onClick={logout}><span className="icon">🚪</span>Logout</button>}
+      {localStorage.getItem("studioId") === "owner" && <Link href="/admin" className={isActive("/admin") ? "active" : ""}><span className="icon">🔐</span>Admin</Link>}
+      {!!localStorage.getItem("studioId") && <button onClick={logout}><span className="icon">🚪</span>Logout</button>}
     </nav>
   );
 }

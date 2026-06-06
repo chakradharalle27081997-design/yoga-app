@@ -4,11 +4,10 @@ import { prisma } from "@/lib/db";
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const studioId = searchParams.get("studioId");
-  const where = studioId ? { studioId } : { studioId: null };
+  const where = (!studioId || studioId === "owner") ? {} : { studioId };
 
   const clients = await prisma.client.findMany({
-    where: { registrationStatus: { not: "pending" } },
-    where,
+    where: { ...where, registrationStatus: { not: "pending" } },
     orderBy: { createdAt: "desc" },
     include: {
       _count: { select: { sequences: true } },

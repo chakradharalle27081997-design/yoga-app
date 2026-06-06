@@ -60,7 +60,7 @@ export default function RegisterPage() {
         <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1D9E75", marginBottom: "0.75rem" }}>Registration Submitted!</h1>
         <p style={{ color: "#6b7280", fontSize: "0.9rem", marginBottom: "1rem" }}>Your instructor will review your details and contact you within 24 hours with your login details.</p>
         <div style={{ background: "#E1F5EE", borderRadius: "10px", padding: "1rem", fontSize: "0.85rem", color: "#0F6E56" }}>
-          Your login PIN will be sent on WhatsApp to <strong>{form.phone}</strong>
+          Your instructor will review your details and share your login PIN on WhatsApp at <strong>{form.phone}</strong>
         </div>
       </div>
     </div>
@@ -119,7 +119,7 @@ export default function RegisterPage() {
               <div>
                 <label style={{ fontSize: "0.8rem", fontWeight: 600, color: "#374151", display: "block", marginBottom: "0.4rem" }}>Phone (WhatsApp) *</label>
                 <input className="form-input" type="tel" placeholder="Your WhatsApp number" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={{ width: "100%" }} />
-                <p style={{ fontSize: "0.72rem", color: "#9ca3af", marginTop: "4px" }}>Your login PIN will be sent here</p>
+                <p style={{ fontSize: "0.72rem", color: "#9ca3af", marginTop: "4px" }}>Your instructor will share your PIN on this number</p>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <div>
