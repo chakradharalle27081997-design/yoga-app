@@ -13,6 +13,7 @@ export default function StudentDashboard() {
   const [moodMap, setMoodMap] = useState({});
   const [showMood, setShowMood] = useState(false);
   const [selectedPose, setSelectedPose] = useState(null);
+  const [expandedCycle, setExpandedCycle] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -150,6 +151,20 @@ export default function StudentDashboard() {
       const data = typeof seq.poses === "string" ? JSON.parse(seq.poses) : seq.poses;
       const wp = data?.phases?.find(p => p.phase === "Warm-up")?.poses || [];
       return wp.filter(p => !p.name?.toLowerCase().includes("surya") && !p.name?.toLowerCase().includes("sun salutation"));
+    } catch { return []; }
+  }
+
+  function getPranayamaPoses(seq) {
+    try {
+      const data = typeof seq.poses === 'string' ? JSON.parse(seq.poses) : seq.poses;
+      return data?.phases?.find(p => p.phase === 'Pranayama')?.poses || [];
+    } catch { return []; }
+  }
+
+  function getPranayamaPoses(seq) {
+    try {
+      const data = typeof seq.poses === 'string' ? JSON.parse(seq.poses) : seq.poses;
+      return data?.phases?.find(p => p.phase === 'Pranayama')?.poses || [];
     } catch { return []; }
   }
 
@@ -372,16 +387,78 @@ export default function StudentDashboard() {
             <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1a2018", marginBottom: "1rem" }}>📚 Past Cycles</h2>
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               {pastPlans.map(seq => (
-                <div key={seq.id} style={{ background: "#f9fafb", borderRadius: "10px", padding: "0.75rem 1rem", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div>
-                    <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a2018" }}>Cycle {seq.cycleNumber} — {seq.style}</div>
-                    <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "2px" }}>
-                      {formatDate(getPlanDates(seq).start)} — {formatDate(getPlanDates(seq).end)} · {seq.goal}
+                <div key={seq.id} style={{ background: "#f9fafb", borderRadius: "10px", overflow: "hidden" }}>
+                  <div onClick={() => setExpandedCycle(expandedCycle === seq.id ? null : seq.id)}
+                    style={{ padding: "0.75rem 1rem", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}>
+                    <div>
+                      <div style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a2018" }}>Cycle {seq.cycleNumber} — {seq.style}</div>
+                      <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "2px" }}>
+                        {formatDate(getPlanDates(seq).start)} — {formatDate(getPlanDates(seq).end)} · {seq.goal}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                      <button onClick={e => { e.stopPropagation(); handlePrint(seq); }} style={{ background: "#f3f4f6", border: "1px solid #e5e7eb", borderRadius: "8px", padding: "6px 12px", fontSize: "0.8rem", cursor: "pointer", color: "#374151" }}>
+                        🖨️ Print
+                      </button>
+                      <span style={{ fontSize: "1rem", color: "#6b7280" }}>{expandedCycle === seq.id ? "▲" : "▼"}</span>
                     </div>
                   </div>
-                  <button onClick={() => handlePrint(seq)} style={{ background: "#f3f4f6", border: "1px solid #e5e7eb", borderRadius: "8px", padding: "6px 12px", fontSize: "0.8rem", cursor: "pointer", color: "#374151" }}>
-                    🖨️ Print
-                  </button>
+                  {expandedCycle === seq.id && (
+                    <div style={{ padding: "0.75rem 1rem", borderTop: "1px solid #e5e7eb", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+
+                      {getWarmupPoses(seq).length > 0 && (
+                        <div style={{ background: "#FFF7ED", borderRadius: "10px", padding: "0.75rem" }}>
+                          <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#92400E", marginBottom: "4px" }}>🔥 Warm-up</div>
+                          <div style={{ fontSize: "0.75rem", color: "#B45309" }}>{getWarmupPoses(seq).map(p => p.name).join(" · ")}</div>
+                        </div>
+                      )}
+
+                      {showSuryaBanner(seq) && (
+                        <div style={{ background: "linear-gradient(135deg, #FFF7ED, #FFFBEB)", border: "1.5px solid #F59E0B", borderRadius: "10px", padding: "0.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                          <div style={{ fontSize: "1.5rem" }}>🌅</div>
+                          <div>
+                            <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#92400E" }}>Surya Namaskar — Before Asanas</div>
+                            <div style={{ fontSize: "0.75rem", color: "#B45309" }}>12 rounds daily, increase gradually.</div>
+                          </div>
+                        </div>
+                      )}
+
+                      {getPoses(seq).length > 0 && (
+                        <div>
+                          <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#1a2018", marginBottom: "0.5rem" }}>🧘 Asanas</div>
+                          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.5rem" }}>
+                            {getPoses(seq).map((pose, i) => {
+                              const imgSrc = getPoseImage(pose.name);
+                              return (
+                                <div key={i} onClick={() => setSelectedPose(pose)}
+                                  style={{ background: "white", borderRadius: "10px", overflow: "hidden", border: "1px solid #e5e7eb", cursor: "pointer" }}>
+                                  {imgSrc
+                                    ? <img src={imgSrc} alt={pose.name} style={{ width: "100%", height: "70px", objectFit: "contain", background: "white", display: "block" }} />
+                                    : <div style={{ width: "100%", height: "70px", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>🧘</div>
+                                  }
+                                  <div style={{ padding: "0.3rem 0.4rem" }}>
+                                    <div style={{ fontSize: "0.65rem", fontWeight: 600, color: "#1a2018", lineHeight: 1.3 }}>{pose.name}</div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {getPranayamaPoses(seq).length > 0 && (
+                        <div style={{ background: "#EEF2FF", borderRadius: "10px", padding: "0.75rem" }}>
+                          <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#3730A3", marginBottom: "4px" }}>🌬️ Pranayama</div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                            {getPranayamaPoses(seq).map((p, i) => (
+                              <div key={i} style={{ fontSize: "0.75rem", color: "#3730A3" }}>• {p.name}{p.duration ? " — " + p.duration : ""}</div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
