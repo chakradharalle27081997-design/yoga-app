@@ -58,6 +58,8 @@ export default function StudentDashboard() {
   const [moodMap, setMoodMap]             = useState({});
   const [selectedPose, setSelectedPose]   = useState(null);
   const [expandedCycle, setExpandedCycle] = useState(null);
+  const [studentNotes, setStudentNotes]   = useState([]);
+  const [unreadCount, setUnreadCount]     = useState(0);
   const [activeTab, setActiveTab]         = useState("plan");
   const [moodDay, setMoodDay]             = useState(null);
   const router = useRouter();
@@ -80,6 +82,15 @@ export default function StudentDashboard() {
       })
       .catch(() => setLoading(false));
     setMoodMap(JSON.parse(localStorage.getItem("moodMap") || "{}"));
+    fetch("/api/session-notes?clientId=" + studentId)
+      .then(r => r.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          setStudentNotes(data);
+          setUnreadCount(data.filter(n => !n.isRead).length);
+        }
+      });
+
   }, []);
 
   async function loadAttendance(clientId, sequenceId) {
@@ -385,6 +396,7 @@ export default function StudentDashboard() {
             { id: "practice", icon: "🧘", label: "Practice" },
             { id: "attend",   icon: "📅", label: "Attendance" },
             { id: "history",  icon: "📚", label: "History" },
+            { id: "notes",    icon: "📝", label: unreadCount > 0 ? `Notes 🔴${unreadCount}` : "Notes" },
           ].map(t => (
             <button key={t.id} className={`yt-btn ${activeTab === t.id ? "on" : ""}`} onClick={() => setActiveTab(t.id)}>
               <span className="ti">{t.icon}</span>{t.label}
@@ -853,6 +865,41 @@ export default function StudentDashboard() {
               )}
             </>
           )}
+          {activeTab === "notes" && (
+            <div>
+              {studentNotes.length === 0 ? (
+                <div className="vc" style={{ textAlign: "center", padding: "4rem 2rem" }}>
+                  <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>📋</div>
+                  <div className="serif" style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1a2018", marginBottom: "0.5rem" }}>No Notes Yet</div>
+                  <div style={{ fontSize: "0.85rem", color: "#aaa" }}>Your instructor will add progress notes here after your sessions.</div>
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                  {studentNotes.map(n => (
+                    <div key={n.id} className="vc" style={{ padding: "1.25rem 1.5rem", cursor: "pointer" }}
+                      onClick={async () => {
+                        if (!n.isRead) {
+                          await fetch("/api/session-notes", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: n.id }) });
+                          setStudentNotes(prev => prev.map(x => x.id === n.id ? { ...x, isRead: true } : x));
+                          setUnreadCount(prev => Math.max(0, prev - 1));
+                        }
+                      }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                          <span style={{ background: "#E1F5EE", color: "#0F6E56", fontSize: "11px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>Cycle {n.cycleNumber}</span>
+                          <span style={{ fontSize: "0.75rem", color: "#aaa" }}>{new Date(n.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                        </div>
+                        {!n.isRead && <span style={{ background: "#FEE2E2", color: "#DC2626", fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>🔴 NEW</span>}
+                      </div>
+                      <p style={{ fontSize: "0.9rem", color: "#374151", lineHeight: 1.75, margin: 0, whiteSpace: "pre-wrap" }}>{n.note}</p>
+                      <div style={{ fontSize: "0.72rem", color: "#aaa", marginTop: "0.75rem", fontStyle: "italic" }}>— Your Instructor, IRA Yoga Studio</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
 
         </div>
 

@@ -33,6 +33,8 @@ function SectionTitle({ children }) {
   return (
     <div style={{ fontSize: "11px", fontWeight: 700, color: "var(--brand)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "0.9rem", paddingBottom: "0.4rem", borderBottom: "1.5px solid var(--brand-light)" }}>
       {children}
+
+
     </div>
   );
 }
@@ -136,6 +138,7 @@ const TABS = [
   { id: "health",     label: "Health Profile" },
   { id: "lifestyle",  label: "Lifestyle & Habits" },
   { id: "sequences",  label: "Sequences" },
+  { id: "notes",      label: "📝 Session Notes" },
 ];
 
 export default function ClientDetailPage() {
@@ -158,6 +161,9 @@ export default function ClientDetailPage() {
   const [generating, setGenerating]   = useState(false);
   const [genError, setGenError]       = useState("");
   const [sequence, setSequence]       = useState(null);
+  const [sessionNotes, setSessionNotes] = useState([]);
+  const [newNote, setNewNote]           = useState("");
+  const [savingNote, setSavingNote]     = useState(false);
   const [manualPoses, setManualPoses] = useState({ "Warm-up": [], "Asanas": [], "Pranayama": [] });
   const [manualSaving, setManualSaving] = useState(false);
   const [asanaCount, setAsanaCount] = useState(6);
@@ -192,6 +198,13 @@ export default function ClientDetailPage() {
         stayType: data.stayType || "", notes: data.notes || "", phone: data.phone || "", pin: data.pin || "",
       });
     });
+  }, [id]);
+
+  useEffect(() => {
+    if (!id) return;
+    fetch("/api/session-notes?clientId=" + id)
+      .then(r => r.json())
+      .then(data => setSessionNotes(Array.isArray(data) ? data : []));
   }, [id]);
 
   function toggleArr(field, val) {
@@ -241,6 +254,26 @@ export default function ClientDetailPage() {
 
   function addPose(phase, pose) { setManualPoses(prev => ({ ...prev, [phase]: [...prev[phase], pose] })); }
   function removePose(phase, poseName) { setManualPoses(prev => ({ ...prev, [phase]: prev[phase].filter(p => p.name !== poseName) })); }
+
+  async function saveNote() {
+    if (!newNote.trim()) return;
+    setSavingNote(true);
+    const cycleNumber = client?.sequences?.length || 1;
+    const res = await fetch("/api/session-notes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clientId: id, cycleNumber, note: newNote.trim() }),
+    });
+    const data = await res.json();
+    setSessionNotes(prev => [data, ...prev]);
+    setNewNote("");
+    setSavingNote(false);
+  }
+
+  async function deleteNote(noteId) {
+    await fetch("/api/session-notes?id=" + noteId, { method: "DELETE" });
+    setSessionNotes(prev => prev.filter(n => n.id !== noteId));
+  }
 
   async function handleDeleteSequence(seqId) {
     if (!confirm("Delete this sequence? This cannot be undone.")) return;
@@ -698,6 +731,53 @@ export default function ClientDetailPage() {
               )}
             </div>
           )}
+        </div>
+      )}
+
+
+
+      {activeTab === "notes" && (
+        <div>
+          <div className="card" style={{ marginBottom: "1.5rem" }}>
+            <div style={{ fontSize: "15px", fontWeight: 700, color: "var(--brand)", marginBottom: "1rem" }}>📝 Add Session Note</div>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", marginBottom: "0.75rem" }}>
+              Cycle {client?.sequences?.length || 1} · {new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+            </div>
+            <textarea
+              value={newNote}
+              onChange={e => setNewNote(e.target.value)}
+              placeholder="Write your observation..."
+              style={{ width: "100%", minHeight: "120px", padding: "12px", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "14px", fontFamily: "inherit", resize: "vertical", boxSizing: "border-box", lineHeight: 1.6 }}
+            />
+            <button onClick={saveNote} disabled={savingNote || !newNote.trim()} className="btn btn-primary" style={{ marginTop: "0.75rem" }}>
+              {savingNote ? "Saving..." : "💾 Save Note"}
+            </button>
+          </div>
+          <div className="card">
+            <div style={{ fontSize: "15px", fontWeight: 700, color: "var(--brand)", marginBottom: "1rem" }}>Previous Notes ({sessionNotes.length})</div>
+            {sessionNotes.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "2rem", color: "var(--text-muted)" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>📋</div>
+                <p>No notes yet. Add your first observation above!</p>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {sessionNotes.map(n => (
+                  <div key={n.id} style={{ background: "#f9fafb", borderRadius: "10px", padding: "1rem 1.1rem", border: "1px solid var(--border)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "0.5rem" }}>
+                      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                        <span style={{ background: "#E1F5EE", color: "#0F6E56", fontSize: "11px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>Cycle {n.cycleNumber}</span>
+                        <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>{new Date(n.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                        {!n.isRead && <span style={{ background: "#FEE2E2", color: "#DC2626", fontSize: "10px", fontWeight: 700, padding: "2px 8px", borderRadius: "20px" }}>NEW</span>}
+                      </div>
+                      <button onClick={() => deleteNote(n.id)} style={{ background: "none", border: "none", color: "#DC2626", cursor: "pointer", fontSize: "12px" }}>🗑</button>
+                    </div>
+                    <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.7, margin: 0, whiteSpace: "pre-wrap" }}>{n.note}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
