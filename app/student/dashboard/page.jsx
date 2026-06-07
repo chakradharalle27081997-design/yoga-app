@@ -4,6 +4,33 @@ import { useRouter } from "next/navigation";
 import { exportSequencePDF } from "@/lib/pdfExport";
 import { getPoseImage } from "@/lib/poseImages";
 
+
+function getPoseReps(pose, cycleNumber) {
+  const cycle = parseInt(cycleNumber) || 1;
+  const type = pose.poseType || "general";
+  const base = {
+    backbend:    { reps: "5-6", max: 8,  hold: 5 },
+    core:        { reps: "6",   max: 12, hold: 5 },
+    standing:    { reps: "6",   max: 12, hold: 5, eachSide: true },
+    twist:       { reps: "6",   max: 10, hold: 5, eachSide: true },
+    restorative: { reps: null,  max: null, hold: 10 },
+    hipopener:   { reps: "6",   max: 12, hold: 8, eachSide: true },
+    forward:     { reps: "5",   max: 10, hold: 5 },
+    general:     { reps: "6",   max: 12, hold: 5 },
+  }[type] || { reps: "6", max: 12, hold: 5 };
+  const holdIncrease = [0, 3, 5, 7];
+  const repIncrease  = [0, 2, 4, 6];
+  const idx = Math.min(cycle - 1, 3);
+  const holdBreaths = base.hold + holdIncrease[idx];
+  const side = base.eachSide ? " each side" : "";
+  if (!base.reps) return { reps: null, hold: holdBreaths + " breaths", side: "" };
+  const baseNum = parseInt(base.reps.split("-").pop());
+  const newMax = Math.min(baseNum + repIncrease[idx], base.max);
+  const newMin = Math.min(parseInt(base.reps.split("-")[0]) + repIncrease[idx], base.max);
+  const repsStr = newMin === newMax ? String(newMax) : newMin + "-" + newMax;
+  return { reps: repsStr + " times" + side, hold: holdBreaths + " breaths", side };
+}
+
 export default function StudentDashboard() {
   const [student, setStudent] = useState(null);
   const [clientData, setClientData] = useState(null);
@@ -49,6 +76,7 @@ export default function StudentDashboard() {
     const clientId = student.id;
     const newVal = !attendance[day];
     setAttendance(prev => ({ ...prev, [day]: newVal }));
+    if (newVal) { setShowMood(true); }
     await fetch("/api/attendance", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -192,6 +220,9 @@ export default function StudentDashboard() {
   const levelColor = { beginner: "#1D9E75", intermediate: "#F59E0B", advanced: "#DC2626" };
   const levelBg = { beginner: "#E1F5EE", intermediate: "#FFFBEB", advanced: "#FEF2F2" };
 
+
+
+
   if (loading) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f7f4" }}>
       <div style={{ textAlign: "center", color: "#1D9E75" }}>
@@ -310,7 +341,7 @@ export default function StudentDashboard() {
                 <div style={{ fontSize: "0.9rem", fontWeight: 700, color: "#1a2018", marginBottom: "0.75rem" }}>🧘 Your Asanas</div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.75rem" }}>
                   {getPoses(currentPlan).map((pose, i) => {
-                    const imgSrc = getPoseImage(pose.name);
+                    const imgSrc = getPoseImage(pose.sanskrit || pose.name, "Asanas");
                     return (
                       <div key={i} onClick={() => setSelectedPose(pose)}
                         style={{ background: "#f9fafb", borderRadius: "12px", overflow: "hidden", border: "1px solid #e5e7eb", cursor: "pointer" }}>
@@ -428,7 +459,7 @@ export default function StudentDashboard() {
                           <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#1a2018", marginBottom: "0.5rem" }}>🧘 Asanas</div>
                           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.5rem" }}>
                             {getPoses(seq).map((pose, i) => {
-                              const imgSrc = getPoseImage(pose.name);
+                              const imgSrc = getPoseImage(pose.sanskrit || pose.name, "Asanas");
                               return (
                                 <div key={i} onClick={() => setSelectedPose(pose)}
                                   style={{ background: "white", borderRadius: "10px", overflow: "hidden", border: "1px solid #e5e7eb", cursor: "pointer" }}>
@@ -476,8 +507,8 @@ export default function StudentDashboard() {
           style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
           <div onClick={e => e.stopPropagation()}
             style={{ background: "white", borderRadius: "16px", maxWidth: "420px", width: "100%", maxHeight: "85vh", overflow: "auto" }}>
-            {getPoseImage(selectedPose.name)
-              ? <img src={getPoseImage(selectedPose.name)} alt={selectedPose.name} style={{ width: "100%", height: "200px", objectFit: "contain", background: "#f9fafb", borderRadius: "16px 16px 0 0" }} />
+            {getPoseImage(selectedPose.sanskrit || selectedPose.name, "Asanas")
+              ? <img src={getPoseImage(selectedPose.sanskrit || selectedPose.name, "Asanas")} alt={selectedPose.name} style={{ width: "100%", height: "200px", objectFit: "contain", background: "#f9fafb", borderRadius: "16px 16px 0 0" }} />
               : <div style={{ width: "100%", height: "200px", background: "#f3f4f6", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "4rem", borderRadius: "16px 16px 0 0" }}>🧘</div>
             }
             <div style={{ padding: "1.25rem" }}>
@@ -485,6 +516,15 @@ export default function StudentDashboard() {
                 <div>
                   <h2 style={{ fontSize: "1rem", fontWeight: 800, color: "#C0392B" }}>{selectedPose.name}</h2>
                   {selectedPose.duration && <p style={{ fontSize: "0.8rem", color: "#6b7280" }}>⏱ {selectedPose.duration}</p>}
+                {(() => {
+                  const r = getPoseReps(selectedPose, currentPlan?.cycleNumber || 1);
+                  return (
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '6px', flexWrap: 'wrap' }}>
+                      {r.reps && <span style={{ background: '#E1F5EE', color: '#1D9E75', fontWeight: 700, fontSize: '0.78rem', padding: '3px 10px', borderRadius: '999px' }}>🔁 {r.reps}</span>}
+                      <span style={{ background: '#EEF2FF', color: '#3730A3', fontWeight: 700, fontSize: '0.78rem', padding: '3px 10px', borderRadius: '999px' }}>🌬 Hold {r.hold}</span>
+                    </div>
+                  );
+                })()}
                 </div>
                 <button onClick={() => setSelectedPose(null)} style={{ background: "none", border: "none", fontSize: "1.2rem", cursor: "pointer", color: "#6b7280" }}>✕</button>
               </div>
@@ -492,16 +532,23 @@ export default function StudentDashboard() {
                 <div style={{ background: "#f9fafb", borderRadius: "10px", padding: "0.75rem 1rem", marginBottom: "0.75rem" }}>
                   <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#1a2018", marginBottom: "6px" }}>📋 How to do</div>
                   <ol style={{ paddingLeft: "1.2rem", margin: 0, display: "flex", flexDirection: "column", gap: "6px" }}>
-                    {String(selectedPose.cues || "").split(".").filter(s => s.trim()).map((step, i) => (
-                      <li key={i} style={{ fontSize: "0.82rem", color: "#374151", lineHeight: 1.6 }}>{step.trim()}</li>
+                    {String(Array.isArray(selectedPose.cues) ? selectedPose.cues.join(". ") : (selectedPose.cues || "")).split(".").filter(s => s.trim()).map((step, i) => (
+                      <li key={i} style={{ fontSize: "0.82rem", color: "#374151", lineHeight: 1.6 }}>
+                        {step.trim()}
+                        {/(\d+-\d+-?\d*\s*times?)/i.test(step) && (
+                          <strong style={{ color: '#1D9E75', marginLeft: '6px' }}>
+                            ({step.match(/(\d+-\d+-?\d*\s*times?)/i)?.[1]})
+                          </strong>
+                        )}
+                      </li>
                     ))}
                   </ol>
                 </div>
               )}
-              {selectedPose.benefits && (
+              {(selectedPose.benefits || selectedPose.description) && (
                 <div style={{ background: "#E1F5EE", borderRadius: "10px", padding: "0.75rem 1rem" }}>
                   <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#0F6E56", marginBottom: "4px" }}>✨ Benefits</div>
-                  <p style={{ fontSize: "0.82rem", color: "#0F6E56" }}>{selectedPose.benefits}</p>
+                  <p style={{ fontSize: "0.82rem", color: "#0F6E56" }}>{selectedPose.benefits || selectedPose.description}</p>
                 </div>
               )}
             </div>
