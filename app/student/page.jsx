@@ -33,7 +33,7 @@ export default function StudentLogin() {
       <div style={{ background: "white", borderRadius: "16px", padding: "2.5rem", width: "100%", maxWidth: "400px", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ fontSize: "2.5rem", marginBottom: "0.5rem" }}>🧘</div>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1D9E75" }}>IRA Yoga Studio</h1>
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1D9E75" }}>Indira Yoga Studio</h1>
           <p style={{ color: "#6b7280", fontSize: "0.9rem", marginTop: "0.25rem" }}>Student Portal</p>
         </div>
         <div style={{ marginBottom: "1rem" }}>

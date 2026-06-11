@@ -139,6 +139,7 @@ const TABS = [
   { id: "lifestyle",  label: "Lifestyle & Habits" },
   { id: "sequences",  label: "Sequences" },
   { id: "notes",      label: "📝 Session Notes" },
+  { id: "payments",   label: "💰 Payments" },
 ];
 
 export default function ClientDetailPage() {
@@ -162,6 +163,9 @@ export default function ClientDetailPage() {
   const [genError, setGenError]       = useState("");
   const [sequence, setSequence]       = useState(null);
   const [sessionNotes, setSessionNotes] = useState([]);
+  const [payments, setPayments]           = useState([]);
+  const [newPayment, setNewPayment]       = useState({ amount: "", month: new Date().toLocaleString("en-IN", { month: "long" }), year: new Date().getFullYear(), notes: "" });
+  const [savingPayment, setSavingPayment] = useState(false);
   const [newNote, setNewNote]           = useState("");
   const [savingNote, setSavingNote]     = useState(false);
   const [manualPoses, setManualPoses] = useState({ "Warm-up": [], "Asanas": [], "Pranayama": [] });
@@ -202,6 +206,9 @@ export default function ClientDetailPage() {
 
   useEffect(() => {
     if (!id) return;
+    fetch("/api/payments?clientId=" + id)
+      .then(r => r.json())
+      .then(data => setPayments(Array.isArray(data) ? data : []));
     fetch("/api/session-notes?clientId=" + id)
       .then(r => r.json())
       .then(data => setSessionNotes(Array.isArray(data) ? data : []));
@@ -254,6 +261,35 @@ export default function ClientDetailPage() {
 
   function addPose(phase, pose) { setManualPoses(prev => ({ ...prev, [phase]: [...prev[phase], pose] })); }
   function removePose(phase, poseName) { setManualPoses(prev => ({ ...prev, [phase]: prev[phase].filter(p => p.name !== poseName) })); }
+
+  async function savePayment() {
+    if (!newPayment.amount) return;
+    setSavingPayment(true);
+    const res = await fetch("/api/payments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ clientId: id, ...newPayment }),
+    });
+    const data = await res.json();
+    setPayments(prev => [data, ...prev]);
+    setNewPayment({ amount: "", month: new Date().toLocaleString("en-IN", { month: "long" }), year: new Date().getFullYear(), notes: "" });
+    setSavingPayment(false);
+  }
+
+  async function markPayment(paymentId, status) {
+    const res = await fetch("/api/payments", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: paymentId, status }),
+    });
+    const data = await res.json();
+    setPayments(prev => prev.map(p => p.id === paymentId ? data : p));
+  }
+
+  async function deletePayment(paymentId) {
+    await fetch("/api/payments?id=" + paymentId, { method: "DELETE" });
+    setPayments(prev => prev.filter(p => p.id !== paymentId));
+  }
 
   async function saveNote() {
     if (!newNote.trim()) return;
@@ -773,6 +809,103 @@ export default function ClientDetailPage() {
                       <button onClick={() => deleteNote(n.id)} style={{ background: "none", border: "none", color: "#DC2626", cursor: "pointer", fontSize: "12px" }}>🗑</button>
                     </div>
                     <p style={{ fontSize: "14px", color: "#374151", lineHeight: 1.7, margin: 0, whiteSpace: "pre-wrap" }}>{n.note}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {activeTab === "payments" && (
+        <div>
+          {/* Add Payment */}
+          <div className="card" style={{ marginBottom: "1.5rem" }}>
+            <div style={{ fontSize: "15px", fontWeight: 700, color: "var(--brand)", marginBottom: "1rem" }}>💰 Add Payment Record</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem", marginBottom: "1rem" }}>
+              <div>
+                <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Amount (₹)</label>
+                <input
+                  type="number"
+                  placeholder="e.g. 2000"
+                  value={newPayment.amount}
+                  onChange={e => setNewPayment({ ...newPayment, amount: e.target.value })}
+                  style={{ width: "100%", padding: "10px", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "14px", boxSizing: "border-box" }}
+                />
+              </div>
+              <div>
+                <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Month</label>
+                <select
+                  value={newPayment.month}
+                  onChange={e => setNewPayment({ ...newPayment, month: e.target.value })}
+                  style={{ width: "100%", padding: "10px", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "14px", boxSizing: "border-box" }}>
+                  {["January","February","March","April","May","June","July","August","September","October","November","December"].map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Year</label>
+                <input
+                  type="number"
+                  value={newPayment.year}
+                  onChange={e => setNewPayment({ ...newPayment, year: e.target.value })}
+                  style={{ width: "100%", padding: "10px", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "14px", boxSizing: "border-box" }}
+                />
+              </div>
+            </div>
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: "4px" }}>Notes (optional)</label>
+              <input
+                type="text"
+                placeholder="e.g. Monthly fee, extra session..."
+                value={newPayment.notes}
+                onChange={e => setNewPayment({ ...newPayment, notes: e.target.value })}
+                style={{ width: "100%", padding: "10px", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "14px", boxSizing: "border-box" }}
+              />
+            </div>
+            <button onClick={savePayment} disabled={savingPayment || !newPayment.amount} className="btn btn-primary">
+              {savingPayment ? "Saving..." : "➕ Add Payment Record"}
+            </button>
+          </div>
+
+          {/* Payment History */}
+          <div className="card">
+            <div style={{ fontSize: "15px", fontWeight: 700, color: "var(--brand)", marginBottom: "1rem" }}>
+              Payment History ({payments.length})
+            </div>
+            {payments.length === 0 ? (
+              <div style={{ textAlign: "center", padding: "2rem", color: "var(--text-muted)" }}>
+                <div style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>💳</div>
+                <p>No payment records yet.</p>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                {payments.map(p => (
+                  <div key={p.id} style={{ background: "#f9fafb", borderRadius: "10px", padding: "1rem 1.1rem", border: "1px solid var(--border)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", marginBottom: "4px" }}>
+                        <span style={{ fontWeight: 700, fontSize: "15px", color: "var(--brand)" }}>₹{p.amount}</span>
+                        <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>{p.month} {p.year}</span>
+                        <span style={{ 
+                          background: p.status === "paid" ? "#E1F5EE" : "#FEE2E2", 
+                          color: p.status === "paid" ? "#0F6E56" : "#DC2626", 
+                          fontSize: "11px", fontWeight: 700, padding: "2px 8px", borderRadius: "20px" }}>
+                          {p.status === "paid" ? "✅ Paid" : "❌ Unpaid"}
+                        </span>
+                      </div>
+                      {p.paidAt && <div style={{ fontSize: "12px", color: "var(--text-muted)" }}>Paid on {new Date(p.paidAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</div>}
+                      {p.notes && <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>{p.notes}</div>}
+                    </div>
+                    <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+                      {p.status === "unpaid" && (
+                        <button onClick={() => markPayment(p.id, "paid")} className="btn btn-primary btn-sm">Mark Paid</button>
+                      )}
+                      {p.status === "paid" && (
+                        <button onClick={() => markPayment(p.id, "unpaid")} style={{ padding: "4px 10px", background: "#f3f4f6", border: "1px solid #e5e7eb", borderRadius: "6px", cursor: "pointer", fontSize: "12px" }}>Undo</button>
+                      )}
+                      <button onClick={() => deletePayment(p.id)} style={{ background: "none", border: "none", color: "#DC2626", cursor: "pointer", fontSize: "14px" }}>🗑</button>
+                    </div>
                   </div>
                 ))}
               </div>

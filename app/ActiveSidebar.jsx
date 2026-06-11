@@ -47,7 +47,7 @@ export default function ActiveSidebar() {
           <path d="M18 26.5 Q15.5 30 19 31 Q22 32 25 31 Q28.5 30 26 26.5" fill="#2D5A1B"/>
         </svg>
         <div className="logo-text">
-          <span className="logo-name">IRA</span>
+          <span className="logo-name">INDIRA</span>
           <span className="logo-sub">Yoga Studio</span>
         </div>
       </div>
@@ -77,7 +77,7 @@ export default function ActiveSidebar() {
         )}
       </nav>
       <div className="sidebar-footer">
-        ✦ Wellness · Balance · Growth ✦
+        ✦ Heal · Balance · Grow ✦
       </div>
     </aside>
   );

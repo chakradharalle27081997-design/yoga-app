@@ -39,6 +39,7 @@ model Client {
   studio        Studio?    @relation(fields: [studioId], references: [id])
   sequences     Sequence[]
   sessionNotes  SessionNote[]
+  payments      Payment[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   height        String     @default("")
@@ -84,6 +85,20 @@ model SessionNote {
   cycleNumber Int      @default(1)
   note        String   @db.Text
   isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  amount      Float
+  month       String
+  year        Int
+  status      String   @default("unpaid")
+  paidAt      DateTime?
+  notes       String   @default("")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

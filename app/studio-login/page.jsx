@@ -16,7 +16,7 @@ export default function StudioLogin() {
   async function handleOwnerLogin() {
     if (pin !== OWNER_PIN) { setError("Invalid PIN"); return; }
     localStorage.setItem("studioId", "owner");
-    localStorage.setItem("studioName", "IRA Yoga Studio");
+    localStorage.setItem("studioName", "Indira Yoga Studio");
     router.push("/");
   }
 
@@ -69,7 +69,7 @@ export default function StudioLogin() {
 
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <div style={{ fontSize: "2.5rem" }}>🧘</div>
-          <h1 style={{ color: "#1D9E75", fontSize: "1.5rem", fontWeight: 800, marginTop: "0.5rem" }}>IRA Yoga Studio</h1>
+          <h1 style={{ color: "#1D9E75", fontSize: "1.5rem", fontWeight: 800, marginTop: "0.5rem" }}>Indira Yoga Studio</h1>
           <p style={{ color: "#6b7280", fontSize: "0.85rem", marginTop: "0.25rem" }}>Instructor Portal</p>
         </div>
 

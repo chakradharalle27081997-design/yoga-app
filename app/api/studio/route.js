@@ -30,10 +30,10 @@ export async function PUT(req) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 });
     }
     if (studio.status === "pending") {
-      return NextResponse.json({ error: "Your account is pending approval from IRA Yoga Studio" }, { status: 403 });
+      return NextResponse.json({ error: "Your account is pending approval from Indira Yoga Studio" }, { status: 403 });
     }
     if (studio.status === "suspended") {
-      return NextResponse.json({ error: "Your account has been suspended. Contact IRA Yoga Studio." }, { status: 403 });
+      return NextResponse.json({ error: "Your account has been suspended. Contact Indira Yoga Studio." }, { status: 403 });
     }
     return NextResponse.json({ studio });
   } catch (err) {
