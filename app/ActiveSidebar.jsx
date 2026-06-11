@@ -89,7 +89,7 @@ export function MobileNav() {
   useEffect(() => { setIsStudio(!!localStorage.getItem("studioId")); }, [pathname]);
   
   if (pathname.startsWith("/studio-login")) return null;
-  if (pathname.startsWith("/student")) return null;
+  if (pathname.startsWith("/student") || pathname.startsWith("/register")) return null;
   function isActive(href) { if (href === "/") return pathname === "/"; return pathname.startsWith(href); }
   function logout() { localStorage.removeItem("studioId"); localStorage.removeItem("studioName"); localStorage.removeItem("studioEmail"); window.location.href = "/studio-login"; }
   return (
