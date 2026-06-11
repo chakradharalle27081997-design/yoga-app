@@ -68,7 +68,7 @@ export default function StudioLogin() {
       <div style={{ padding: "2.5rem", background: "white", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", maxWidth: "420px", width: "100%" }}>
 
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <img src="/logo.png" alt="Indira Yoga Studio" style={{ width: "80px", height: "80px", borderRadius: "50%", objectFit: "cover", margin: "0 auto 0.5rem", display: "block", border: "2px solid rgba(201,168,76,0.4)" }} />
+          <img src="/logo.png" alt="Indira Yoga Studio" style={{ width: "120px", height: "120px", borderRadius: "50%", objectFit: "cover", margin: "0 auto 0.5rem", display: "block", border: "2px solid rgba(201,168,76,0.4)" }} />
           <h1 style={{ color: "#1D9E75", fontSize: "1.5rem", fontWeight: 800, marginTop: "0.5rem" }}>Indira Yoga Studio</h1>
           <p style={{ color: "#6b7280", fontSize: "0.85rem", marginTop: "0.25rem" }}>Instructor Portal</p>
         </div>

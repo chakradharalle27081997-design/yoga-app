@@ -382,7 +382,7 @@ export default function StudentDashboard() {
         {/* ── HEADER ── */}
         <div className="yh">
           <div className="yh-l">
-            <img src="/logo.png" alt="logo" style={{ width: "40px", height: "40px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(201,168,76,0.4)" }} />
+            <img src="/logo.png" alt="logo" style={{ width: "52px", height: "52px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(201,168,76,0.4)" }} />
             <div>
               <div className="yh-name">{student?.name}</div>
               <div className="yh-sub">{currentPlan ? `Cycle ${currentPlan.cycleNumber} · ${currentPlan.style} · ${currentPlan.duration} min` : "Indira Yoga Studio"}</div>
