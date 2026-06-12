@@ -1094,8 +1094,8 @@ export default function StudentDashboard() {
                           {p.status === "paid" ? "Paid ✓" : "Due"}
                         </div>
                         {p.status === "paid" && (
-                          <button onClick={() => downloadReceipt(p)} style={{ display: "block", marginTop: "6px", background: "none", border: "1px solid #1D9E75", color: "#1D9E75", borderRadius: "6px", padding: "2px 8px", fontSize: "0.68rem", fontWeight: 700, cursor: "pointer", width: "100%" }}>
-                            Receipt
+                          <button onClick={() => downloadReceipt(p)} style={{ display: "block", marginTop: "8px", background: "#1D9E75", border: "none", color: "white", borderRadius: "6px", padding: "5px 10px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer", width: "100%" }}>
+                            🧾 Receipt
                           </button>
                         )}
                       </div>
