@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
   const studioId = searchParams.get("studioId");
-  const where = studioId ? { studioId } : { studioId: null };
+  const where = (!studioId || studioId === "owner") ? {} : { studioId };
 
   const clients = await prisma.client.findMany({
     where,
