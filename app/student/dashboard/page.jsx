@@ -60,6 +60,7 @@ export default function StudentDashboard() {
   const [expandedCycle, setExpandedCycle] = useState(null);
   const [studentNotes, setStudentNotes]   = useState([]);
   const [unreadCount, setUnreadCount]     = useState(0);
+  const [myPayments, setMyPayments]       = useState([]);
   const [activeTab, setActiveTab]         = useState("plan");
   const [moodDay, setMoodDay]             = useState(null);
   const router = useRouter();
