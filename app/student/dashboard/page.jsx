@@ -245,7 +245,7 @@ export default function StudentDashboard() {
     w('</style></head><body onload="window.print()">');
     w('<div class="receipt">');
     w('<div class="header">');
-    w('<img src="https://irayoga.vercel.app/logo.png" class="logo" alt="logo" />');
+    w('<img src="https://indirayogastudent.vercel.app/logo.png" class="logo" alt="logo" />');
     w('<div class="studio-name">Indira Yoga Studio</div>');
     w('<div class="studio-sub">Therapeutic Yoga · Hatha · Pranayama</div>');
     w('</div>');
