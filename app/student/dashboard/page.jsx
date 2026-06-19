@@ -255,7 +255,7 @@ export default function StudentDashboard() {
     w('<div class="row"><span class="label">Student Name</span><span class="value">' + studentName + '</span></div>');
     w('<div class="row"><span class="label">Period</span><span class="value">' + p.month + ' ' + p.year + '</span></div>');
     w('<div class="row"><span class="label">Payment Date</span><span class="value">' + paidDate + '</span></div>');
-    if (p.notes) win.document.write('<div class="row"><span class="label">Description</span><span class="value">' + p.notes + '</span></div>');
+    if (p.notes) w('<div class="row"><span class="label">Description</span><span class="value">' + p.notes + '</span></div>');
     w('<div class="amount-box">');
     w('<div class="amount-label">Amount Paid</div>');
     w('<div class="amount-value">Rs.' + p.amount.toLocaleString() + '</div>');
@@ -267,7 +267,16 @@ export default function StudentDashboard() {
     w('<div class="sig-label">Authorized Signature — Indira Yoga Studio</div>');
     w('<div class="note">This is a computer generated receipt. Valid for reimbursement purposes.</div>');
     w('</div></div></body></html>');
-    win.document.close();
+    const html = lines.join('\n');
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Receipt-' + receiptNo + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
   }
 
   if (loading) return (
