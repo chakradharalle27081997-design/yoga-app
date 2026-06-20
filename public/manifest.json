@@ -1,0 +1,22 @@
+{
+  "name": "Indira Yoga Studio",
+  "short_name": "Indira Yoga",
+  "description": "Your personal therapeutic yoga journey",
+  "start_url": "/student",
+  "display": "standalone",
+  "background_color": "#0a2a1f",
+  "theme_color": "#1D9E75",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
