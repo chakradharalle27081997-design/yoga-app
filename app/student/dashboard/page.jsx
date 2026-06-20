@@ -63,6 +63,7 @@ export default function StudentDashboard() {
   const [myPayments, setMyPayments]       = useState([]);
   const [installPrompt, setInstallPrompt]  = useState(null);
   const [showInstall, setShowInstall]      = useState(false);
+  const [isAppInstalled, setIsAppInstalled] = useState(false);
   const [activeTab, setActiveTab]         = useState("plan");
   const [moodDay, setMoodDay]             = useState(null);
   const router = useRouter();
@@ -541,6 +542,39 @@ export default function StudentDashboard() {
           )}
 
           {/* ══════════ MY PLAN ══════════ */}
+
+          {/* ── GET THE APP CARD ── */}
+          {!isAppInstalled && (
+            <div style={{ background:"linear-gradient(135deg,#0a2a1f 0%,#1a6b49 60%,#2d9e6e 100%)", borderRadius:"20px", padding:"1.5rem", marginBottom:"1.25rem", boxShadow:"0 8px 32px rgba(29,158,117,0.25)", position:"relative", overflow:"hidden" }}>
+              <div style={{ position:"absolute", top:"-30px", right:"-30px", width:"120px", height:"120px", borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
+              <div style={{ position:"absolute", bottom:"-20px", left:"30%", width:"80px", height:"80px", borderRadius:"50%", background:"rgba(255,255,255,0.04)" }} />
+              <div style={{ display:"flex", alignItems:"center", gap:"1rem", marginBottom:"1rem" }}>
+                <img src="/logo.png" style={{ width:"48px", height:"48px", borderRadius:"50%", border:"2px solid rgba(244,200,122,0.5)" }} />
+                <div>
+                  <div style={{ color:"#F4C87A", fontWeight:800, fontSize:"1rem", fontFamily:"Playfair Display,serif" }}>Get the Indira Yoga App</div>
+                  <div style={{ color:"rgba(255,255,255,0.65)", fontSize:"0.75rem", marginTop:"2px" }}>Install for quick access anytime</div>
+                </div>
+              </div>
+              <div style={{ display:"flex", gap:"0.75rem", marginBottom:"1rem" }}>
+                {["📵 Works Offline","🔔 Notifications","⚡ Faster Access"].map(f => (
+                  <div key={f} style={{ background:"rgba(255,255,255,0.08)", borderRadius:"8px", padding:"4px 8px", fontSize:"0.65rem", color:"rgba(255,255,255,0.8)", fontWeight:600, whiteSpace:"nowrap" }}>{f}</div>
+                ))}
+              </div>
+              {installPrompt ? (
+                <button onClick={handleInstall} style={{ width:"100%", background:"#F4C87A", border:"none", color:"#0a2a1f", borderRadius:"12px", padding:"0.75rem", fontSize:"0.88rem", fontWeight:800, cursor:"pointer", letterSpacing:"0.02em" }}>
+                  📲 Install App Now
+                </button>
+              ) : (
+                <div style={{ background:"rgba(255,255,255,0.08)", borderRadius:"12px", padding:"0.75rem", textAlign:"center" }}>
+                  <div style={{ color:"white", fontSize:"0.8rem", fontWeight:600, marginBottom:"4px" }}>📱 Add to Home Screen</div>
+                  <div style={{ color:"rgba(255,255,255,0.55)", fontSize:"0.7rem" }}>
+                    iPhone: tap Share → "Add to Home Screen"<br/>
+                    Android: tap ⋮ menu → "Add to Home Screen"
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           {activeTab === "plan" && (
             <>
               {currentPlan ? (
