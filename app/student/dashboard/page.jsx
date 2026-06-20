@@ -304,14 +304,21 @@ export default function StudentDashboard() {
     .yh-out{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:7px 18px;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'DM Sans',sans-serif;transition:all 0.2s;letter-spacing:0.02em;}
     .yh-out:hover{background:rgba(255,255,255,0.2);}
 
-    /* Tabs */
-    .yt{background:white;display:flex;border-bottom:2px solid #EAE4DC;position:sticky;top:0;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,0.08);}
-    .yt-btn{flex:1;padding:1rem 0.5rem;border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:0.78rem;font-weight:500;color:#aaa;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.25s;display:flex;flex-direction:column;align-items:center;gap:3px;margin-bottom:-2px;}
-    .yt-btn .ti{font-size:1.2rem;}
-    .yt-btn.on{color:#1D9E75;border-bottom-color:#1D9E75;font-weight:700;background:linear-gradient(180deg,transparent,rgba(29,158,117,0.04));}
+    /* Bottom Nav */
+    .yt{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-around;padding:0.5rem 0.25rem calc(0.5rem + env(safe-area-inset-bottom));box-shadow:0 -4px 32px rgba(0,0,0,0.08);}
+    .yt-btn{flex:1;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0.4rem 0.25rem;position:relative;transition:transform 0.2s;}
+    .yt-btn:active{transform:scale(0.88);}
+    .yt-btn .ti{font-size:1.45rem;line-height:1;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);}
+    .yt-btn.on .ti{transform:scale(1.18);}
+    .yt-btn .tl{font-family:'DM Sans',sans-serif;font-size:0.62rem;font-weight:600;color:#aaa;letter-spacing:0.02em;transition:all 0.2s;margin-top:1px;}
+    .yt-btn.on .tl{color:#1D9E75;font-weight:700;}
+    .yt-btn .t-pill{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:rgba(29,158,117,0.12);opacity:0;transition:opacity 0.25s;}
+    .yt-btn.on .t-pill{opacity:1;}
+    .yt-badge{position:absolute;top:0;right:calc(50% - 18px);background:#EF4444;color:white;font-size:0.55rem;font-weight:800;min-width:15px;height:15px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid white;}
 
     /* Content */
-    .yc{width:100%;max-width:1400px;margin:0 auto;padding:1.75rem 2.5rem;}
+    .yc{width:100%;max-width:1400px;margin:0 auto;padding:1.75rem 2.5rem;padding-bottom:6rem;}
+    @media(max-width:768px){.yc{padding:1rem 1rem 6rem;}}
 
     /* Grid layouts */
     .g2{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;align-items:start;}
@@ -466,18 +473,20 @@ export default function StudentDashboard() {
           <button className="yh-out" onClick={handleLogout}>Logout</button>
         </div>
 
-        {/* ── TABS ── */}
+        {/* ── BOTTOM NAV ── */}
         <div className="yt">
           {[
-            { id: "plan",     icon: "🏠", label: "My Plan" },
+            { id: "plan",     icon: "🏠", label: "Plan" },
             { id: "practice", icon: "🧘", label: "Practice" },
-            { id: "attend",   icon: "📅", label: "Attendance" },
+            { id: "attend",   icon: "📅", label: "Attend" },
             { id: "history",  icon: "📚", label: "History" },
-            { id: "notes",    icon: "📝", label: unreadCount > 0 ? `Notes 🔴${unreadCount}` : "Notes" },
-            { id: "payments", icon: "💰", label: "Payments" },
+            { id: "notes",    icon: "📝", label: "Notes" },
+            { id: "payments", icon: "💰", label: "Pay" },
           ].map(t => (
             <button key={t.id} className={`yt-btn ${activeTab === t.id ? "on" : ""}`} onClick={() => setActiveTab(t.id)}>
-              <span className="ti">{t.icon}</span>{t.label}
+              <span className="t-pill" />
+              <span className="ti">{t.icon}</span>
+              <span className="tl">{t.label}{t.id === "notes" && unreadCount > 0 && <span className="yt-badge">{unreadCount}</span>}</span>
             </button>
           ))}
         </div>
