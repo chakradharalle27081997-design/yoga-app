@@ -61,6 +61,8 @@ export default function StudentDashboard() {
   const [studentNotes, setStudentNotes]   = useState([]);
   const [unreadCount, setUnreadCount]     = useState(0);
   const [myPayments, setMyPayments]       = useState([]);
+  const [installPrompt, setInstallPrompt]  = useState(null);
+  const [showInstall, setShowInstall]      = useState(false);
   const [activeTab, setActiveTab]         = useState("plan");
   const [moodDay, setMoodDay]             = useState(null);
   const router = useRouter();
@@ -83,6 +85,15 @@ export default function StudentDashboard() {
       })
       .catch(() => setLoading(false));
     setMoodMap(JSON.parse(localStorage.getItem("moodMap") || "{}"));
+
+    // PWA install prompt
+    const handler = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+      setShowInstall(true);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
     fetch("/api/payments?clientId=" + studentId)
       .then(r => r.json())
       .then(data => { if (Array.isArray(data)) setMyPayments(data); });
@@ -96,6 +107,14 @@ export default function StudentDashboard() {
       });
 
   }, []);
+
+  async function handleInstall() {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') setShowInstall(false);
+    setInstallPrompt(null);
+  }
 
   async function loadAttendance(clientId, sequenceId) {
     const res = await fetch(`/api/attendance?clientId=${clientId}&sequenceId=${sequenceId}`);
@@ -472,6 +491,23 @@ export default function StudentDashboard() {
           </div>
           <button className="yh-out" onClick={handleLogout}>Logout</button>
         </div>
+
+        {/* ── INSTALL BANNER ── */}
+        {showInstall && (
+          <div style={{ margin:"0.75rem 1rem 0", background:"linear-gradient(135deg,#0a2a1f,#1D9E75)", borderRadius:"16px", padding:"0.85rem 1rem", display:"flex", alignItems:"center", justifyContent:"space-between", boxShadow:"0 4px 20px rgba(29,158,117,0.3)" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:"0.75rem" }}>
+              <img src="/logo.png" style={{ width:"36px", height:"36px", borderRadius:"50%", border:"2px solid rgba(255,255,255,0.3)" }} />
+              <div>
+                <div style={{ color:"white", fontWeight:700, fontSize:"0.85rem" }}>Install Indira Yoga App</div>
+                <div style={{ color:"rgba(255,255,255,0.65)", fontSize:"0.72rem" }}>Add to home screen for quick access</div>
+              </div>
+            </div>
+            <div style={{ display:"flex", gap:"0.5rem" }}>
+              <button onClick={() => setShowInstall(false)} style={{ background:"rgba(255,255,255,0.1)", border:"none", color:"rgba(255,255,255,0.6)", borderRadius:"8px", padding:"6px 10px", fontSize:"0.75rem", cursor:"pointer" }}>✕</button>
+              <button onClick={handleInstall} style={{ background:"#F4C87A", border:"none", color:"#0a2a1f", borderRadius:"8px", padding:"6px 14px", fontSize:"0.75rem", fontWeight:800, cursor:"pointer" }}>Install</button>
+            </div>
+          </div>
+        )}
 
         {/* ── BOTTOM NAV ── */}
         <div className="yt">
