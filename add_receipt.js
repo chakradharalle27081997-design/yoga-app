@@ -33,8 +33,8 @@ const receiptFn = `
     win.document.write('</style></head><body onload="window.print()">');
     win.document.write('<div class="receipt">');
     win.document.write('<div class="header">');
-    win.document.write('<img src="https://irayoga.vercel.app/logo.png" class="logo" alt="logo" />');
-    win.document.write('<div class="studio-name">Indira Yoga Studio</div>');
+    win.document.write('<img src="https://navirayogastudent.vercel.app/logo.png" class="logo" alt="logo" />');
+    win.document.write('<div class="studio-name">Navira Yoga Studio</div>');
     win.document.write('<div class="studio-sub">Therapeutic Yoga · Hatha · Pranayama</div>');
     win.document.write('</div>');
     win.document.write('<div class="receipt-title">Payment Receipt</div>');
@@ -52,7 +52,7 @@ const receiptFn = `
     win.document.write('</div>');
     win.document.write('<div class="footer">');
     win.document.write('<div class="sig-line"></div>');
-    win.document.write('<div class="sig-label">Authorized Signature — Indira Yoga Studio</div>');
+    win.document.write('<div class="sig-label">Authorized Signature — Navira Yoga Studio</div>');
     win.document.write('<div class="note">This is a computer generated receipt. Valid for reimbursement purposes.</div>');
     win.document.write('</div></div></body></html>');
     win.document.close();

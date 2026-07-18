@@ -213,7 +213,7 @@ export default function StudentDashboard() {
     const win = window.open("", "_blank");
     w(`<html><head><title>Certificate</title>
     <style>body{font-family:serif;text-align:center;padding:60px;background:#f0f7f4;}.cert{background:white;border:8px solid #1D9E75;border-radius:24px;padding:60px;max-width:700px;margin:0 auto;}h1{color:#1D9E75;font-size:2.5rem;}h2{color:#C17F3A;font-size:1.8rem;margin:1rem 0;}p{color:#555;font-size:1.1rem;line-height:1.8;}.om{font-size:4rem;color:#1D9E75;}</style></head>
-    <body onload="window.print()"><div class="cert"><div class="om">ॐ</div><h1>Certificate of Completion</h1><p>This is to certify that</p><h2>${name}</h2><p>has successfully completed a <strong>10-Day Yoga Practice Cycle</strong> with dedication, consistency, and mindfulness.</p><p style="font-style:italic;color:#1D9E75;margin-top:1.5rem;">"Yogaḥ citta-vṛtti nirodhaḥ"</p><div style="font-size:0.9rem;color:#999;margin-top:2rem;">Completed on ${new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"long",year:"numeric"})}</div><div style="font-size:1rem;font-weight:bold;color:#1D9E75;margin-top:1rem;">🧘 Indira Yoga Studio</div></div></body></html>`);
+    <body onload="window.print()"><div class="cert"><div class="om">ॐ</div><h1>Certificate of Completion</h1><p>This is to certify that</p><h2>${name}</h2><p>has successfully completed a <strong>10-Day Yoga Practice Cycle</strong> with dedication, consistency, and mindfulness.</p><p style="font-style:italic;color:#1D9E75;margin-top:1.5rem;">"Yogaḥ citta-vṛtti nirodhaḥ"</p><div style="font-size:0.9rem;color:#999;margin-top:2rem;">Completed on ${new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"long",year:"numeric"})}</div><div style="font-size:1rem;font-weight:bold;color:#1D9E75;margin-top:1rem;">🧘 Navira Yoga Studio</div></div></body></html>`);
     const html = lines.join('\n');
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -265,8 +265,8 @@ export default function StudentDashboard() {
     w('</style></head><body onload="window.print()">');
     w('<div class="receipt">');
     w('<div class="header">');
-    w('<img src="https://indirayogastudent.vercel.app/logo.png" class="logo" alt="logo" />');
-    w('<div class="studio-name">Indira Yoga Studio</div>');
+    w('<img src="https://navirayogastudent.vercel.app/logo.png" class="logo" alt="logo" />');
+    w('<div class="studio-name">Navira Yoga Studio</div>');
     w('<div class="studio-sub">Therapeutic Yoga · Hatha · Pranayama</div>');
     w('</div>');
     w('<div class="receipt-title">Payment Receipt</div>');
@@ -284,7 +284,7 @@ export default function StudentDashboard() {
     w('</div>');
     w('<div class="footer">');
     w('<div class="sig-line"></div>');
-    w('<div class="sig-label">Authorized Signature — Indira Yoga Studio</div>');
+    w('<div class="sig-label">Authorized Signature — Navira Yoga Studio</div>');
     w('<div class="note">This is a computer generated receipt. Valid for reimbursement purposes.</div>');
     w('</div></div></body></html>');
     const html = lines.join('\n');
@@ -486,7 +486,7 @@ export default function StudentDashboard() {
             <img src="/logo.png" alt="logo" style={{ width: "52px", height: "52px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(201,168,76,0.4)" }} />
             <div>
               <div className="yh-name">{student?.name}</div>
-              <div className="yh-sub">{currentPlan ? `Cycle ${currentPlan.cycleNumber} · ${currentPlan.style} · ${currentPlan.duration} min` : "Indira Yoga Studio"}</div>
+              <div className="yh-sub">{currentPlan ? `Cycle ${currentPlan.cycleNumber} · ${currentPlan.style} · ${currentPlan.duration} min` : "Navira Yoga Studio"}</div>
               <div className="yh-date">{today}</div>
             </div>
           </div>
@@ -499,7 +499,7 @@ export default function StudentDashboard() {
             <div style={{ display:"flex", alignItems:"center", gap:"0.75rem" }}>
               <img src="/logo.png" style={{ width:"36px", height:"36px", borderRadius:"50%", border:"2px solid rgba(255,255,255,0.3)" }} />
               <div>
-                <div style={{ color:"white", fontWeight:700, fontSize:"0.85rem" }}>Install Indira Yoga App</div>
+                <div style={{ color:"white", fontWeight:700, fontSize:"0.85rem" }}>Install Navira Yoga App</div>
                 <div style={{ color:"rgba(255,255,255,0.65)", fontSize:"0.72rem" }}>Add to home screen for quick access</div>
               </div>
             </div>
@@ -551,7 +551,7 @@ export default function StudentDashboard() {
               <div style={{ display:"flex", alignItems:"center", gap:"1rem", marginBottom:"1rem" }}>
                 <img src="/logo.png" style={{ width:"48px", height:"48px", borderRadius:"50%", border:"2px solid rgba(244,200,122,0.5)" }} />
                 <div>
-                  <div style={{ color:"#F4C87A", fontWeight:800, fontSize:"1rem", fontFamily:"Playfair Display,serif" }}>Get the Indira Yoga App</div>
+                  <div style={{ color:"#F4C87A", fontWeight:800, fontSize:"1rem", fontFamily:"Playfair Display,serif" }}>Get the Navira Yoga App</div>
                   <div style={{ color:"rgba(255,255,255,0.65)", fontSize:"0.75rem", marginTop:"2px" }}>Install for quick access anytime</div>
                 </div>
               </div>
@@ -583,7 +583,7 @@ export default function StudentDashboard() {
                   <div className="vc-dark" style={{ textAlign: "center", padding: "1.5rem" }}>
                     <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>🕉️</div>
                     <div className="serif" style={{ fontSize: "1rem", color: "rgba(255,255,255,0.9)", fontStyle: "italic", lineHeight: 1.6 }}>{quote}</div>
-                    <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", marginTop: "0.5rem" }}>Indira Yoga Studio · Your personal journey</div>
+                    <div style={{ fontSize: "0.7rem", color: "rgba(255,255,255,0.4)", marginTop: "0.5rem" }}>Navira Yoga Studio · Your personal journey</div>
                   </div>
 
                   {/* Stats */}
@@ -683,7 +683,7 @@ export default function StudentDashboard() {
                       <div className="vc" style={{ padding: "1.35rem" }}>
                         <div className="serif" style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1rem", color: "#1a2018" }}>Your Toolkit</div>
                         <button className="btn-p" onClick={() => handlePrint(currentPlan)}>🖨️ Print / Download My Plan</button>
-                        <a className="btn-w" href={`https://wa.me/917996272792?text=Hi%20Indira%20Yoga%20Studio%2C%20I%20am%20${encodeURIComponent(student?.name || "")}%20and%20I%20need%20help.`} target="_blank" rel="noopener noreferrer">
+                        <a className="btn-w" href={`https://wa.me/917996272792?text=Hi%20Navira%20Yoga%20Studio%2C%20I%20am%20${encodeURIComponent(student?.name || "")}%20and%20I%20need%20help.`} target="_blank" rel="noopener noreferrer">
                           <span>💬</span> Contact Instructor on WhatsApp
                         </a>
                       </div>
@@ -1049,7 +1049,7 @@ export default function StudentDashboard() {
                         {!n.isRead && <span style={{ background: "#FEE2E2", color: "#DC2626", fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>🔴 NEW</span>}
                       </div>
                       <p style={{ fontSize: "0.9rem", color: "#374151", lineHeight: 1.75, margin: 0, whiteSpace: "pre-wrap" }}>{n.note}</p>
-                      <div style={{ fontSize: "0.72rem", color: "#aaa", marginTop: "0.75rem", fontStyle: "italic" }}>— Your Instructor, Indira Yoga Studio</div>
+                      <div style={{ fontSize: "0.72rem", color: "#aaa", marginTop: "0.75rem", fontStyle: "italic" }}>— Your Instructor, Navira Yoga Studio</div>
                     </div>
                   ))}
                 </div>
@@ -1198,7 +1198,7 @@ export default function StudentDashboard() {
                     </div>
                   ))}
                   {myPayments.some(p => p.status === "unpaid") && (
-                    <a href={"https://wa.me/917996272792?text=Hi%20Indira%20Yoga%20Studio%2C%20I%20am%20" + encodeURIComponent(student?.name || "") + "%20and%20I%20would%20like%20to%20clear%20my%20pending%20payment."} target="_blank" rel="noopener noreferrer"
+                    <a href={"https://wa.me/917996272792?text=Hi%20Navira%20Yoga%20Studio%2C%20I%20am%20" + encodeURIComponent(student?.name || "") + "%20and%20I%20would%20like%20to%20clear%20my%20pending%20payment."} target="_blank" rel="noopener noreferrer"
                       style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", padding: "0.85rem", background: "#25D366", color: "white", borderRadius: "12px", textDecoration: "none", fontWeight: 700, fontSize: "0.9rem", marginTop: "0.5rem" }}>
                       💬 Contact Instructor to Pay
                     </a>
@@ -1209,7 +1209,7 @@ export default function StudentDashboard() {
           )}
 
         <p style={{ textAlign: "center", fontSize: "0.7rem", color: "#C8BFB0", padding: "2rem 1rem 1.5rem", fontFamily: "serif", fontStyle: "italic" }}>
-          Indira Yoga Studio · Your personal yoga journey 🌿
+          Navira Yoga Studio · Your personal yoga journey 🌿
         </p>
 
       </div>

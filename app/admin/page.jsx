@@ -31,7 +31,7 @@ export default function AdminPage() {
   if (!authed) return (
     <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f9f5f0" }}>
       <div style={{ padding: "40px", background: "white", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", maxWidth: "360px", width: "100%" }}>
-        <h2 style={{ color: "#2d6a4f", textAlign: "center" }}>🔐 Indira Yoga Admin</h2>
+        <h2 style={{ color: "#2d6a4f", textAlign: "center" }}>🔐 Navira Yoga Admin</h2>
         <input type="password" placeholder="Admin Password" value={password} onChange={e => setPassword(e.target.value)}
           style={{ width: "100%", padding: "12px", border: "1px solid #ddd", borderRadius: "8px", marginTop: "24px", fontSize: "16px", boxSizing: "border-box" }} />
         <button onClick={login} style={{ width: "100%", padding: "14px", background: "#2d6a4f", color: "white", border: "none", borderRadius: "8px", marginTop: "16px", fontSize: "16px", cursor: "pointer" }}>
@@ -43,7 +43,7 @@ export default function AdminPage() {
 
   return (
     <div style={{ padding: "32px", background: "#f9f5f0", minHeight: "100vh" }}>
-      <h1 style={{ color: "#2d6a4f" }}>🧘 Indira Yoga — Studio Management</h1>
+      <h1 style={{ color: "#2d6a4f" }}>🧘 Navira Yoga — Studio Management</h1>
       <table style={{ width: "100%", borderCollapse: "collapse", background: "white", borderRadius: "12px", overflow: "hidden", boxShadow: "0 2px 10px rgba(0,0,0,0.08)", marginTop: "24px" }}>
         <thead>
           <tr style={{ background: "#2d6a4f", color: "white" }}>

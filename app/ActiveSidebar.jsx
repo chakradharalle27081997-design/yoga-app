@@ -30,7 +30,7 @@ export default function ActiveSidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <img src="/logo.png" alt="Indira Yoga Studio" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(201,168,76,0.4)" }} /><svg width="0" height="0" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <img src="/logo.png" alt="Navira Yoga Studio" style={{ width: "64px", height: "64px", borderRadius: "50%", objectFit: "cover", border: "2px solid rgba(201,168,76,0.4)" }} /><svg width="0" height="0" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
           <circle cx="22" cy="22" r="21" fill="#FFF8F0" stroke="#C17F3A" strokeWidth="0.8"/>
           <ellipse cx="22" cy="14" rx="5" ry="10" fill="#E8F5E0" stroke="#4A7C35" strokeWidth="0.4"/>
           <ellipse cx="22" cy="14" rx="5" ry="10" fill="#E8F5E0" stroke="#4A7C35" strokeWidth="0.4" transform="rotate(60 22 22)"/>
@@ -47,7 +47,7 @@ export default function ActiveSidebar() {
           <path d="M18 26.5 Q15.5 30 19 31 Q22 32 25 31 Q28.5 30 26 26.5" fill="#2D5A1B"/>
         </svg>
         <div className="logo-text">
-          <span className="logo-name">INDIRA</span>
+          <span className="logo-name">NAVIRA</span>
           <span className="logo-sub">Yoga Studio</span>
         </div>
       </div>

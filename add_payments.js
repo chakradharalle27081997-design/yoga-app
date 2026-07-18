@@ -66,7 +66,7 @@ const paymentsTab = `
 
                   {/* WhatsApp for dues */}
                   {myPayments.some(p => p.status === "unpaid") && (
-                    <a href={"https://wa.me/917996272792?text=Hi%20Indira%20Yoga%20Studio%2C%20I%20am%20" + encodeURIComponent(student?.name || "") + "%20and%20I%20would%20like%20to%20clear%20my%20pending%20payment."} target="_blank" rel="noopener noreferrer"
+                    <a href={"https://wa.me/917996272792?text=Hi%20Navira%20Yoga%20Studio%2C%20I%20am%20" + encodeURIComponent(student?.name || "") + "%20and%20I%20would%20like%20to%20clear%20my%20pending%20payment."} target="_blank" rel="noopener noreferrer"
                       style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", padding: "0.85rem", background: "#25D366", color: "white", borderRadius: "12px", textDecoration: "none", fontWeight: 700, fontSize: "0.9rem", marginTop: "0.5rem" }}>
                       💬 Contact Instructor to Pay
                     </a>

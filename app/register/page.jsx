@@ -72,7 +72,7 @@ export default function RegisterPage() {
 
         <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
           <div style={{ fontSize: "2rem" }}>🧘</div>
-          <h1 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#1D9E75" }}>Indira Yoga Studio</h1>
+          <h1 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#1D9E75" }}>Navira Yoga Studio</h1>
           <p style={{ fontSize: "0.85rem", color: "#6b7280" }}>Student Registration</p>
         </div>
 
@@ -358,7 +358,7 @@ export default function RegisterPage() {
           )}
         </div>
 
-        <p style={{ textAlign: "center", fontSize: "0.75rem", color: "#9ca3af", marginTop: "1rem" }}>Indira Yoga Studio · Your data is safe and private</p>
+        <p style={{ textAlign: "center", fontSize: "0.75rem", color: "#9ca3af", marginTop: "1rem" }}>Navira Yoga Studio · Your data is safe and private</p>
       </div>
     </div>
   );

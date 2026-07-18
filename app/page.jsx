@@ -40,7 +40,7 @@ export default function DashboardPage() {
     <div>
       <div className="welcome-banner" style={{ marginBottom: "1.75rem" }}>
         <div className="welcome-text">
-          <h2>Welcome to Indira Yoga Studio 🙏</h2>
+          <h2>Welcome to Navira Yoga Studio 🙏</h2>
           <p>Curate, review, and refine asana plans personalised for each student's unique journey.</p>
           <p style={{ fontSize: "0.8rem", opacity: 0.75, marginTop: "0.4rem" }}>📅 {today}</p>
         </div>

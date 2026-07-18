@@ -562,7 +562,7 @@ export default function ClientDetailPage() {
           </div>
           <div style={{ marginTop: "1rem", background: "#E1F5EE", borderRadius: "8px", padding: "0.75rem 1rem" }}>
             <div style={{ fontSize: "12px", fontWeight: 600, color: "#0F6E56", marginBottom: "4px" }}>Student Portal Link</div>
-            <div style={{ fontSize: "13px", color: "#1D9E75" }}>https://indirayogastudent.vercel.app/student</div>
+            <div style={{ fontSize: "13px", color: "#1D9E75" }}>https://navirayogastudent.vercel.app/student</div>
           </div>
           <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end" }}>
             <button className="btn btn-primary" onClick={() => setActiveTab("sequences")}>Next: Sequences →</button>
