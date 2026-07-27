@@ -2,8 +2,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-const OWNER_PIN = "191997"; // Change this to your preferred PIN
-
 export default function StudioLogin() {
   const router = useRouter();
   const [mode, setMode] = useState("owner"); // "owner" or "studio"
@@ -14,10 +12,23 @@ export default function StudioLogin() {
   const [pending, setPending] = useState(false);
 
   async function handleOwnerLogin() {
-    if (pin !== OWNER_PIN) { setError("Invalid PIN"); return; }
-    localStorage.setItem("studioId", "owner");
-    localStorage.setItem("studioName", "Navira Yoga Studio");
-    router.push("/");
+    setLoading(true); setError("");
+    try {
+      const res = await fetch("/api/owner-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin }),
+      });
+      const data = await res.json();
+      setLoading(false);
+      if (!res.ok) { setError(data.error || "Invalid PIN"); return; }
+      localStorage.setItem("studioId", "owner");
+      localStorage.setItem("studioName", "Navira Yoga Studio");
+      router.push("/");
+    } catch (err) {
+      setLoading(false);
+      setError("Something went wrong. Try again.");
+    }
   }
 
   async function handleStudioLogin() {
@@ -100,9 +111,9 @@ export default function StudioLogin() {
                 style={{ width: "100%", padding: "0.85rem", border: "1.5px solid #e5e7eb", borderRadius: "8px", fontSize: "1.5rem", letterSpacing: "0.5rem", textAlign: "center", outline: "none" }}
               />
             </div>
-            <button onClick={handleOwnerLogin} disabled={pin.length !== 6}
-              style={{ padding: "0.85rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", fontWeight: 700, cursor: "pointer", opacity: pin.length !== 6 ? 0.5 : 1 }}>
-              Enter Dashboard
+            <button onClick={handleOwnerLogin} disabled={pin.length !== 6 || loading}
+              style={{ padding: "0.85rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", fontWeight: 700, cursor: "pointer", opacity: (pin.length !== 6 || loading) ? 0.5 : 1 }}>
+              {loading ? "Verifying..." : "Enter Dashboard"}
             </button>
           </div>
         )}
