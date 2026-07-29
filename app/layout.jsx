@@ -17,7 +17,8 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-title" content="Navira Yoga" />
         <meta name="theme-color" content="#1D9E75" />
         <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/logo.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
       </head>
       <body>
         <LayoutShell>{children}</LayoutShell>
