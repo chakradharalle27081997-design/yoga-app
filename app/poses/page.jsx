@@ -17,8 +17,8 @@ export default function PoseLibraryPage() {
     return matchSearch && matchLevel;
   });
 
-  const levelColor = { beginner: "#1D9E75", intermediate: "#F59E0B", advanced: "#DC2626" };
-  const levelBg = { beginner: "#E1F5EE", intermediate: "#FFFBEB", advanced: "#FEF2F2" };
+  const levelColor = { beginner: "#3E4A2A", intermediate: "#F59E0B", advanced: "#DC2626" };
+  const levelBg = { beginner: "#E7ECDA", intermediate: "#FFFBEB", advanced: "#FEF2F2" };
 
   return (
     <div>
@@ -102,9 +102,9 @@ export default function PoseLibraryPage() {
               </div>
 
               {/* Benefits */}
-              <div style={{ background: "#E1F5EE", borderRadius: "10px", padding: "0.75rem 1rem", marginBottom: "1rem" }}>
-                <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#0F6E56", marginBottom: "4px" }}>✨ Benefits</div>
-                <p style={{ fontSize: "0.82rem", color: "#0F6E56" }}>{selected.description}</p>
+              <div style={{ background: "#E7ECDA", borderRadius: "10px", padding: "0.75rem 1rem", marginBottom: "1rem" }}>
+                <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#202A15", marginBottom: "4px" }}>✨ Benefits</div>
+                <p style={{ fontSize: "0.82rem", color: "#202A15" }}>{selected.description}</p>
               </div>
 
               {/* Instructions */}

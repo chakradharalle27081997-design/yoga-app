@@ -29,11 +29,11 @@ export default function StudentLogin() {
   }
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f0f7f4", display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+    <div style={{ minHeight: "100vh", background: "#E7ECDA", display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
       <div style={{ background: "white", borderRadius: "16px", padding: "2.5rem", width: "100%", maxWidth: "400px", boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <img src="/logo.png" alt="Navira Yoga Studio" style={{ width: "120px", height: "120px", borderRadius: "50%", objectFit: "cover", margin: "0 auto 0.75rem", display: "block", border: "2px solid rgba(29,158,117,0.3)" }} />
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1D9E75" }}>Navira Yoga Studio</h1>
+          <img src="/logo.png" alt="Navira Yoga Studio" style={{ width: "120px", height: "120px", borderRadius: "50%", objectFit: "cover", margin: "0 auto 0.75rem", display: "block", border: "2px solid rgba(62,74,42,0.3)" }} />
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#3E4A2A", fontFamily: "Fraunces, serif" }}>Navira Yoga Studio</h1>
           <p style={{ color: "#6b7280", fontSize: "0.9rem", marginTop: "0.25rem" }}>Student Portal</p>
         </div>
         <div style={{ marginBottom: "1rem" }}>
@@ -61,7 +61,7 @@ export default function StudentLogin() {
         <button
           onClick={handleLogin}
           disabled={loading || !phone || !pin}
-          style={{ width: "100%", padding: "0.85rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1 }}
+          style={{ width: "100%", padding: "0.85rem", background: "#3E4A2A", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", fontWeight: 700, cursor: "pointer", opacity: loading ? 0.7 : 1 }}
         >
           {loading ? "Logging in..." : "View My Plan"}
         </button>

@@ -93,7 +93,7 @@ function SortArrow({ col, sortCol, sortDir }) {
 
 // Avatar with initials
 function Avatar({ name, size = 34 }) {
-  const colors = ["#2D5A1B","#C17F3A","#1D9E75","#6366F1","#E85D04","#7B2D8B"];
+  const colors = ["#3E4A2A","#93711F","#8B9C6B","#6E7460","#BE9346","#202A15"];
   const idx = name.charCodeAt(0) % colors.length;
   return (
     <div style={{ width: size, height: size, borderRadius: "50%", background: colors[idx], color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: size * 0.38 + "px", flexShrink: 0 }}>
@@ -435,7 +435,7 @@ export default function ClientsPage() {
                             {cycle.status === "none" ? (
                               <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>—</span>
                             ) : cycle.status === "active" ? (
-                              <span style={{ fontSize: "12px", fontWeight: 600, padding: "3px 10px", borderRadius: "999px", background: "#E1F5EE", color: "#0F6E56" }}>🟢 {cycle.daysLeft}d left</span>
+                              <span style={{ fontSize: "12px", fontWeight: 600, padding: "3px 10px", borderRadius: "999px", background: "#E7ECDA", color: "#202A15" }}>🟢 {cycle.daysLeft}d left</span>
                             ) : (
                               <span style={{ fontSize: "12px", fontWeight: 600, padding: "3px 10px", borderRadius: "999px", background: "#FEE2E2", color: "#DC2626" }}>🔴 Ended</span>
                             )}
@@ -496,7 +496,7 @@ export default function ClientsPage() {
             <div style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "0.4rem", fontWeight: 500 }}>Total Number of Students</div>
             <div style={{ fontSize: "2.8rem", fontWeight: 800, color: "var(--text)", lineHeight: 1 }}>{clients.length}</div>
             {clients.length > 0 && (
-              <div style={{ marginTop: "0.5rem", fontSize: "13px", fontWeight: 600, color: "#16a34a", display: "flex", alignItems: "center", gap: "4px" }}>
+              <div style={{ marginTop: "0.5rem", fontSize: "13px", fontWeight: 600, color: "#3E4A2A", display: "flex", alignItems: "center", gap: "4px" }}>
                 <span>▲</span> 100% from last month
               </div>
             )}
@@ -505,7 +505,7 @@ export default function ClientsPage() {
           {/* Active plans */}
           <div className="card" style={{ textAlign: "left" }}>
             <div style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "0.4rem", fontWeight: 500 }}>Active Plans</div>
-            <div style={{ fontSize: "2.8rem", fontWeight: 800, color: "#0F6E56", lineHeight: 1 }}>{activeCount}</div>
+            <div style={{ fontSize: "2.8rem", fontWeight: 800, color: "#202A15", lineHeight: 1 }}>{activeCount}</div>
             <div style={{ marginTop: "0.5rem", fontSize: "12px", color: "var(--text-muted)" }}>Currently running</div>
           </div>
 

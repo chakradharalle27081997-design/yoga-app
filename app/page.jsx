@@ -106,23 +106,23 @@ export default function DashboardPage() {
       </div>
 
       {pendingClients.length > 0 && (
-        <div style={{ background: "#EEF2FF", border: "1px solid #6366F1", borderRadius: "12px", padding: "1.25rem 1.5rem", marginBottom: "1.75rem" }}>
+        <div style={{ background: "#EFE0BC", border: "1px solid #93711F", borderRadius: "12px", padding: "1.25rem 1.5rem", marginBottom: "1.75rem" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
             <span style={{ fontSize: "1.1rem" }}>🔔</span>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: "#3730A3" }}>{pendingClients.length} Pending Registration{pendingClients.length > 1 ? "s" : ""}</div>
-            <div style={{ fontSize: "0.85rem", color: "#6366F1", marginLeft: "0.25rem" }}>— awaiting your approval</div>
+            <div style={{ fontSize: "1rem", fontWeight: 700, color: "#93711F" }}>{pendingClients.length} Pending Registration{pendingClients.length > 1 ? "s" : ""}</div>
+            <div style={{ fontSize: "0.85rem", color: "#93711F", marginLeft: "0.25rem" }}>— awaiting your approval</div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
             {pendingClients.map(c => (
-              <div key={c.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "white", border: "1px solid #C7D2FE", borderRadius: "8px", padding: "0.75rem 1rem" }}>
+              <div key={c.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: "white", border: "1px solid #EFE0BC", borderRadius: "8px", padding: "0.75rem 1rem" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#EEF2FF", color: "#3730A3", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.95rem" }}>{c.name.charAt(0).toUpperCase()}</div>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", background: "#EFE0BC", color: "#93711F", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: "0.95rem" }}>{c.name.charAt(0).toUpperCase()}</div>
                   <div>
                     <div style={{ fontWeight: 600, fontSize: "0.95rem", color: "#1a2018" }}>{c.name}</div>
-                    <div style={{ fontSize: "0.8rem", color: "#6366F1" }}>📱 {c.phone} · Age {c.age} · {new Date(c.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}</div>
+                    <div style={{ fontSize: "0.8rem", color: "#93711F" }}>📱 {c.phone} · Age {c.age} · {new Date(c.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short" })}</div>
                   </div>
                 </div>
-                <Link href={`/pending/${c.id}`} className="btn btn-sm" style={{ background: "#6366F1", color: "white", border: "none" }}>Review →</Link>
+                <Link href={`/pending/${c.id}`} className="btn btn-sm" style={{ background: "#93711F", color: "white", border: "none" }}>Review →</Link>
               </div>
             ))}
           </div>
@@ -212,7 +212,7 @@ export default function DashboardPage() {
                         {hasSeq ? (
                           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                             <div style={{ width: "60px", height: "6px", background: "#e5e7eb", borderRadius: "999px" }}>
-                              <div style={{ width: `${(attended / 10) * 100}%`, height: "100%", background: attended === 10 ? "#1D9E75" : attended >= 5 ? "#F59E0B" : "#DC2626", borderRadius: "999px" }} />
+                              <div style={{ width: `${(attended / 10) * 100}%`, height: "100%", background: attended === 10 ? "#3E4A2A" : attended >= 5 ? "#F59E0B" : "#DC2626", borderRadius: "999px" }} />
                             </div>
                             <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-muted)" }}>{attended}/10</span>
                           </div>
@@ -220,7 +220,7 @@ export default function DashboardPage() {
                       </td>
                       <td>
                         {cycle.status === "none" && <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>No plan yet</span>}
-                        {cycle.status === "active" && <span style={{ fontSize: "0.85rem", fontWeight: 600, padding: "4px 12px", borderRadius: "999px", background: "#E1F5EE", color: "#0F6E56" }}>🟢 {cycle.daysLeft}d left</span>}
+                        {cycle.status === "active" && <span style={{ fontSize: "0.85rem", fontWeight: 600, padding: "4px 12px", borderRadius: "999px", background: "#E7ECDA", color: "#202A15" }}>🟢 {cycle.daysLeft}d left</span>}
                         {cycle.status === "ended" && <span style={{ fontSize: "0.85rem", fontWeight: 600, padding: "4px 12px", borderRadius: "999px", background: "#FEE2E2", color: "#DC2626" }}>🔴 Ended</span>}
                       </td>
                       <td>

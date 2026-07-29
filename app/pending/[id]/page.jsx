@@ -54,9 +54,9 @@ export default function PendingReviewPage() {
   ];
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f0f7f4", padding: "1rem" }}>
+    <div style={{ minHeight: "100vh", background: "#E7ECDA", padding: "1rem" }}>
       <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-        <div style={{ background: "#6366F1", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem", color: "white" }}>
+        <div style={{ background: "#93711F", borderRadius: "16px", padding: "1.5rem", marginBottom: "1rem", color: "white" }}>
           <div style={{ fontSize: "0.85rem", opacity: 0.8, marginBottom: "4px" }}>Pending Registration Review</div>
           <h1 style={{ fontSize: "1.4rem", fontWeight: 800 }}>{client.name}</h1>
           <div style={{ fontSize: "0.85rem", opacity: 0.85 }}>📱 {client.phone} · Age {client.age} · {client.experience}</div>
@@ -93,7 +93,7 @@ export default function PendingReviewPage() {
             {rejecting ? "Rejecting..." : "❌ Reject"}
           </button>
           <button onClick={handleApprove} disabled={approving || pin.length !== 4}
-            style={{ flex: 2, padding: "0.85rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 700, cursor: "pointer", opacity: pin.length !== 4 ? 0.5 : 1 }}>
+            style={{ flex: 2, padding: "0.85rem", background: "#3E4A2A", color: "white", border: "none", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 700, cursor: "pointer", opacity: pin.length !== 4 ? 0.5 : 1 }}>
             {approving ? "Approving..." : "✅ Approve & Set PIN"}
           </button>
         </div>

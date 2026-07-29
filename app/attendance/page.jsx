@@ -67,7 +67,7 @@ export default function AttendancePage() {
             <tbody>
               {data.map(({ client, sequence, attended, records }) => {
                 const pct = sequence ? Math.round((attended / 10) * 100) : 0;
-                const color = pct === 100 ? "#1D9E75" : pct >= 50 ? "#F59E0B" : "#DC2626";
+                const color = pct === 100 ? "#3E4A2A" : pct >= 50 ? "#F59E0B" : "#DC2626";
                 return (
                   <tr key={client.id}>
                     <td>
@@ -99,7 +99,7 @@ export default function AttendancePage() {
                           {Array.from({ length: 10 }, (_, i) => {
                             const record = records.find(r => r.day === i + 1);
                             return (
-                              <div key={i} style={{ width: "16px", height: "16px", borderRadius: "3px", background: record?.attended ? "#1D9E75" : "#e5e7eb", fontSize: "9px", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
+                              <div key={i} style={{ width: "16px", height: "16px", borderRadius: "3px", background: record?.attended ? "#3E4A2A" : "#e5e7eb", fontSize: "9px", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
                                 {record?.attended ? "✓" : ""}
                               </div>
                             );

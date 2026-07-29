@@ -17,8 +17,8 @@ const PRESETS = [30, 45, 60, 75, 90, 120];
 
 const PHASE_COLORS = {
   "Warm-up":   { bg: "#FFF7ED", border: "#F59E0B", label: "#92400E" },
-  "Asanas":    { bg: "#E1F5EE", border: "#1D9E75", label: "#0F6E56" },
-  "Pranayama": { bg: "#EEF2FF", border: "#6366F1", label: "#3730A3" },
+  "Asanas":    { bg: "#E7ECDA", border: "#3E4A2A", label: "#202A15" },
+  "Pranayama": { bg: "#EFE0BC", border: "#93711F", label: "#93711F" },
 };
 const PHASE_ICONS = { "Warm-up": "🔥", "Asanas": "🧘", "Pranayama": "🌬️" };
 
@@ -560,9 +560,9 @@ export default function ClientDetailPage() {
               <input className="form-input" type="text" maxLength={4} value={form.pin} onChange={e => setForm({ ...form, pin: e.target.value })} placeholder="e.g. 1234" />
             </div>
           </div>
-          <div style={{ marginTop: "1rem", background: "#E1F5EE", borderRadius: "8px", padding: "0.75rem 1rem" }}>
-            <div style={{ fontSize: "12px", fontWeight: 600, color: "#0F6E56", marginBottom: "4px" }}>Student Portal Link</div>
-            <div style={{ fontSize: "13px", color: "#1D9E75" }}>https://navirayogastudent.vercel.app/student</div>
+          <div style={{ marginTop: "1rem", background: "#E7ECDA", borderRadius: "8px", padding: "0.75rem 1rem" }}>
+            <div style={{ fontSize: "12px", fontWeight: 600, color: "#202A15", marginBottom: "4px" }}>Student Portal Link</div>
+            <div style={{ fontSize: "13px", color: "#3E4A2A" }}>https://navirayogastudent.vercel.app/student</div>
           </div>
           <div style={{ marginTop: "1rem", display: "flex", justifyContent: "flex-end" }}>
             <button className="btn btn-primary" onClick={() => setActiveTab("sequences")}>Next: Sequences →</button>
@@ -631,8 +631,8 @@ export default function ClientDetailPage() {
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px", marginBottom: "1.25rem" }}>
               {[
                 { phase: "Warm-up",   mins: split.warmup,    icon: "🔥", bg: "#FFF7ED", border: "#F59E0B", text: "#92400E", sub: "Joint mobilisation" },
-                { phase: "Asanas",    mins: split.asanas,    icon: "🧘", bg: "#E1F5EE", border: "#1D9E75", text: "#0F6E56", sub: "Main postures" },
-                { phase: "Pranayama", mins: split.pranayama, icon: "🌬️", bg: "#EEF2FF", border: "#6366F1", text: "#3730A3", sub: "Breathing & Savasana" },
+                { phase: "Asanas",    mins: split.asanas,    icon: "🧘", bg: "#E7ECDA", border: "#3E4A2A", text: "#202A15", sub: "Main postures" },
+                { phase: "Pranayama", mins: split.pranayama, icon: "🌬️", bg: "#EFE0BC", border: "#93711F", text: "#93711F", sub: "Breathing & Savasana" },
               ].map(p => (
                 <div key={p.phase} style={{ background: p.bg, border: "1px solid " + p.border, borderRadius: "8px", padding: "10px 12px", textAlign: "center" }}>
                   <div style={{ fontSize: "18px" }}>{p.icon}</div>
@@ -672,7 +672,7 @@ export default function ClientDetailPage() {
                     selectedPoses={manualPoses[phase]} onAdd={addPose} onRemove={removePose} />
                 ))}
                 <button className="btn btn-primary btn-lg" onClick={handleSaveAndPrint} disabled={manualSaving}
-                  style={{ background: "#0F6E56" }}>
+                  style={{ background: "#202A15" }}>
                   {manualSaving ? "Saving..." : "💾🖨️ Save & Print"}
                 </button>
               </div>
@@ -802,7 +802,7 @@ export default function ClientDetailPage() {
                   <div key={n.id} style={{ background: "#f9fafb", borderRadius: "10px", padding: "1rem 1.1rem", border: "1px solid var(--border)" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "0.5rem" }}>
                       <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                        <span style={{ background: "#E1F5EE", color: "#0F6E56", fontSize: "11px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>Cycle {n.cycleNumber}</span>
+                        <span style={{ background: "#E7ECDA", color: "#202A15", fontSize: "11px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>Cycle {n.cycleNumber}</span>
                         <span style={{ fontSize: "12px", color: "var(--text-muted)" }}>{new Date(n.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
                         {!n.isRead && <span style={{ background: "#FEE2E2", color: "#DC2626", fontSize: "10px", fontWeight: 700, padding: "2px 8px", borderRadius: "20px" }}>NEW</span>}
                       </div>
@@ -888,8 +888,8 @@ export default function ClientDetailPage() {
                         <span style={{ fontWeight: 700, fontSize: "15px", color: "var(--brand)" }}>₹{p.amount}</span>
                         <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>{p.month} {p.year}</span>
                         <span style={{ 
-                          background: p.status === "paid" ? "#E1F5EE" : "#FEE2E2", 
-                          color: p.status === "paid" ? "#0F6E56" : "#DC2626", 
+                          background: p.status === "paid" ? "#E7ECDA" : "#FEE2E2", 
+                          color: p.status === "paid" ? "#202A15" : "#DC2626", 
                           fontSize: "11px", fontWeight: 700, padding: "2px 8px", borderRadius: "20px" }}>
                           {p.status === "paid" ? "✅ Paid" : "❌ Unpaid"}
                         </span>

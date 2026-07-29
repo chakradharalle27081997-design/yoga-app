@@ -61,13 +61,13 @@ export default function StudioLogin() {
   }
 
   if (pending) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f7f4" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#E7ECDA" }}>
       <div style={{ textAlign: "center", padding: "2.5rem", background: "white", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", maxWidth: "400px" }}>
         <div style={{ fontSize: "3rem" }}>⏳</div>
-        <h2 style={{ color: "#1D9E75", marginTop: "1rem" }}>Request Submitted!</h2>
+        <h2 style={{ color: "#3E4A2A", marginTop: "1rem", fontFamily: "Fraunces, serif" }}>Request Submitted!</h2>
         <p style={{ color: "#6b7280", marginTop: "0.5rem" }}>Your studio registration is pending approval. You will be notified once approved.</p>
         <button onClick={() => { setPending(false); setMode("studio"); }}
-          style={{ marginTop: "1.5rem", padding: "0.75rem 1.5rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: 600 }}>
+          style={{ marginTop: "1.5rem", padding: "0.75rem 1.5rem", background: "#3E4A2A", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: 600 }}>
           Back to Login
         </button>
       </div>
@@ -75,12 +75,12 @@ export default function StudioLogin() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#f0f7f4", padding: "1rem" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#E7ECDA", padding: "1rem" }}>
       <div style={{ padding: "2.5rem", background: "white", borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", maxWidth: "420px", width: "100%" }}>
 
         <div style={{ textAlign: "center", marginBottom: "2rem" }}>
           <img src="/logo.png" alt="Navira Yoga Studio" style={{ width: "120px", height: "120px", borderRadius: "50%", objectFit: "cover", margin: "0 auto 0.5rem", display: "block", border: "2px solid rgba(201,168,76,0.4)" }} />
-          <h1 style={{ color: "#1D9E75", fontSize: "1.5rem", fontWeight: 800, marginTop: "0.5rem" }}>Navira Yoga Studio</h1>
+          <h1 style={{ color: "#3E4A2A", fontSize: "1.5rem", fontWeight: 800, marginTop: "0.5rem", fontFamily: "Fraunces, serif" }}>Navira Yoga Studio</h1>
           <p style={{ color: "#6b7280", fontSize: "0.85rem", marginTop: "0.25rem" }}>Instructor Portal</p>
         </div>
 
@@ -88,7 +88,7 @@ export default function StudioLogin() {
         <div style={{ display: "flex", background: "#f3f4f6", borderRadius: "10px", padding: "4px", marginBottom: "1.5rem" }}>
           {[{ id: "owner", label: "🔑 Owner" }, { id: "studio", label: "🏢 Studio Login" }].map(m => (
             <button key={m.id} onClick={() => { setMode(m.id); setError(""); }}
-              style={{ flex: 1, padding: "0.5rem", borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "0.85rem", fontWeight: 600, background: mode === m.id ? "white" : "transparent", color: mode === m.id ? "#1D9E75" : "#6b7280", boxShadow: mode === m.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none" }}>
+              style={{ flex: 1, padding: "0.5rem", borderRadius: "8px", border: "none", cursor: "pointer", fontSize: "0.85rem", fontWeight: 600, background: mode === m.id ? "white" : "transparent", color: mode === m.id ? "#3E4A2A" : "#6b7280", boxShadow: mode === m.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none" }}>
               {m.label}
             </button>
           ))}
@@ -112,7 +112,7 @@ export default function StudioLogin() {
               />
             </div>
             <button onClick={handleOwnerLogin} disabled={pin.length !== 6 || loading}
-              style={{ padding: "0.85rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", fontWeight: 700, cursor: "pointer", opacity: (pin.length !== 6 || loading) ? 0.5 : 1 }}>
+              style={{ padding: "0.85rem", background: "#3E4A2A", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", fontWeight: 700, cursor: "pointer", opacity: (pin.length !== 6 || loading) ? 0.5 : 1 }}>
               {loading ? "Verifying..." : "Enter Dashboard"}
             </button>
           </div>
@@ -131,13 +131,13 @@ export default function StudioLogin() {
               style={{ padding: "0.75rem 1rem", border: "1.5px solid #e5e7eb", borderRadius: "8px", fontSize: "0.95rem", outline: "none" }} />
             <button onClick={form.registering ? handleRegister : handleStudioLogin}
               disabled={loading || !form.email || !form.password || (form.registering && !form.name)}
-              style={{ padding: "0.85rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", fontWeight: 700, cursor: "pointer" }}>
+              style={{ padding: "0.85rem", background: "#3E4A2A", color: "white", border: "none", borderRadius: "8px", fontSize: "1rem", fontWeight: 700, cursor: "pointer" }}>
               {loading ? "Please wait..." : form.registering ? "Register Studio" : "Sign In"}
             </button>
             <p style={{ textAlign: "center", fontSize: "0.82rem", color: "#9ca3af" }}>
               {form.registering ? "Already registered? " : "New studio? "}
               <span onClick={() => setForm({ ...form, registering: !form.registering })}
-                style={{ color: "#1D9E75", cursor: "pointer", fontWeight: 600 }}>
+                style={{ color: "#3E4A2A", cursor: "pointer", fontWeight: 600 }}>
                 {form.registering ? "Sign in" : "Register here"}
               </span>
             </p>

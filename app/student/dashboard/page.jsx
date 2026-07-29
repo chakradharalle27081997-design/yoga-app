@@ -4,6 +4,22 @@ import { useRouter } from "next/navigation";
 import { exportSequencePDF } from "@/lib/pdfExport";
 import { getPoseImage } from "@/lib/poseImages";
 
+const NAV_ICON_PATHS = {
+  plan:     <><path d="M3 11.5 12 4l9 7.5" /><path d="M5.5 10v9a1 1 0 0 0 1 1H10v-5.5h4V20h3.5a1 1 0 0 0 1-1v-9" /></>,
+  practice: <><path d="M12 4c1 2.6 2.6 4 4.7 4.6C15.3 9.4 14 11 12 13.5 10 11 8.7 9.4 7.3 8.6 9.4 8 11 6.6 12 4z" strokeLinejoin="round" /><path d="M12 13.5v6.5" /><path d="M6.5 20c2-1.6 3.7-1.6 5.5 0 1.8-1.6 3.5-1.6 5.5 0" strokeLinejoin="round" /></>,
+  attend:   <><rect x="3.5" y="5" width="17" height="15" rx="2.5" /><path d="M8 3v4M16 3v4M3.5 10h17" /></>,
+  history:  <><path d="M12 21a9 9 0 1 1 9-9" /><path d="M12 7.5V12l3 2" /><path d="M3.5 9.5 3 5.5l4 1" /></>,
+  notes:    <><path d="M6 3.5h9l4.5 4.5V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z" strokeLinejoin="round" /><path d="M14.5 3.5V8H19" /><path d="M8 12.5h8M8 16h5" /></>,
+  payments: <><rect x="3" y="6" width="18" height="13" rx="2.5" /><path d="M3 10h18" /><path d="M7 15h3" /></>,
+};
+function NavIcon({ id }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" width="22" height="22">
+      {NAV_ICON_PATHS[id]}
+    </svg>
+  );
+}
+
 function getPoseReps(pose, cycleNumber) {
   const cycle = parseInt(cycleNumber) || 1;
   const type = pose.poseType || "general";
@@ -64,6 +80,7 @@ export default function StudentDashboard() {
   const [installPrompt, setInstallPrompt]  = useState(null);
   const [showInstall, setShowInstall]      = useState(false);
   const [isAppInstalled, setIsAppInstalled] = useState(false);
+  const [showInstallPop, setShowInstallPop] = useState(false);
   const [activeTab, setActiveTab]         = useState("plan");
   const [moodDay, setMoodDay]             = useState(null);
   const router = useRouter();
@@ -87,14 +104,17 @@ export default function StudentDashboard() {
       .catch(() => setLoading(false));
     setMoodMap(JSON.parse(localStorage.getItem("moodMap") || "{}"));
 
-    // PWA install prompt
+    // Detect if already running as an installed PWA
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    setIsAppInstalled(standalone);
+
+    // PWA install prompt (captured silently; surfaced via the header install button instead of an auto banner)
     const handler = (e) => {
       e.preventDefault();
       setInstallPrompt(e);
-      setShowInstall(true);
     };
     window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+
     fetch("/api/payments?clientId=" + studentId)
       .then(r => r.json())
       .then(data => { if (Array.isArray(data)) setMyPayments(data); });
@@ -107,13 +127,15 @@ export default function StudentDashboard() {
         }
       });
 
+    return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
   async function handleInstall() {
+    setShowInstallPop(false);
     if (!installPrompt) return;
     installPrompt.prompt();
     const { outcome } = await installPrompt.userChoice;
-    if (outcome === 'accepted') setShowInstall(false);
+    if (outcome === 'accepted') setIsAppInstalled(true);
     setInstallPrompt(null);
   }
 
@@ -212,8 +234,8 @@ export default function StudentDashboard() {
     const name = student?.name || "Student";
     const win = window.open("", "_blank");
     w(`<html><head><title>Certificate</title>
-    <style>body{font-family:serif;text-align:center;padding:60px;background:#f0f7f4;}.cert{background:white;border:8px solid #1D9E75;border-radius:24px;padding:60px;max-width:700px;margin:0 auto;}h1{color:#1D9E75;font-size:2.5rem;}h2{color:#C17F3A;font-size:1.8rem;margin:1rem 0;}p{color:#555;font-size:1.1rem;line-height:1.8;}.om{font-size:4rem;color:#1D9E75;}</style></head>
-    <body onload="window.print()"><div class="cert"><div class="om">ॐ</div><h1>Certificate of Completion</h1><p>This is to certify that</p><h2>${name}</h2><p>has successfully completed a <strong>10-Day Yoga Practice Cycle</strong> with dedication, consistency, and mindfulness.</p><p style="font-style:italic;color:#1D9E75;margin-top:1.5rem;">"Yogaḥ citta-vṛtti nirodhaḥ"</p><div style="font-size:0.9rem;color:#999;margin-top:2rem;">Completed on ${new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"long",year:"numeric"})}</div><div style="font-size:1rem;font-weight:bold;color:#1D9E75;margin-top:1rem;">🧘 Navira Yoga Studio</div></div></body></html>`);
+    <style>body{font-family:serif;text-align:center;padding:60px;background:#E7ECDA;}.cert{background:white;border:8px solid #3E4A2A;border-radius:24px;padding:60px;max-width:700px;margin:0 auto;}h1{color:#3E4A2A;font-size:2.5rem;}h2{color:#93711F;font-size:1.8rem;margin:1rem 0;}p{color:#555;font-size:1.1rem;line-height:1.8;}.om{font-size:4rem;color:#3E4A2A;}</style></head>
+    <body onload="window.print()"><div class="cert"><div class="om">ॐ</div><h1>Certificate of Completion</h1><p>This is to certify that</p><h2>${name}</h2><p>has successfully completed a <strong>10-Day Yoga Practice Cycle</strong> with dedication, consistency, and mindfulness.</p><p style="font-style:italic;color:#3E4A2A;margin-top:1.5rem;">"Yogaḥ citta-vṛtti nirodhaḥ"</p><div style="font-size:0.9rem;color:#999;margin-top:2rem;">Completed on ${new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"long",year:"numeric"})}</div><div style="font-size:1rem;font-weight:bold;color:#3E4A2A;margin-top:1rem;">🧘 Navira Yoga Studio</div></div></body></html>`);
     const html = lines.join('\n');
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
@@ -244,20 +266,20 @@ export default function StudentDashboard() {
     w('* { margin:0; padding:0; box-sizing:border-box; }');
     w('body { font-family: Georgia, serif; background:#f5f5f5; display:flex; justify-content:center; padding:40px 20px; }');
     w('.receipt { background:white; width:480px; border-radius:12px; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,0.12); }');
-    w('.header { background:linear-gradient(135deg,#0d2e1c,#1D9E75); padding:2rem; text-align:center; color:white; }');
+    w('.header { background:linear-gradient(135deg,#171F10,#3E4A2A); padding:2rem; text-align:center; color:white; }');
     w('.logo { width:70px; height:70px; border-radius:50%; border:3px solid rgba(201,168,76,0.6); margin:0 auto 0.75rem; display:block; }');
-    w('.studio-name { font-size:1.4rem; font-weight:800; color:#F4C87A; letter-spacing:0.05em; }');
+    w('.studio-name { font-size:1.4rem; font-weight:800; color:#BE9346; letter-spacing:0.05em; }');
     w('.studio-sub { font-size:0.8rem; color:rgba(255,255,255,0.7); margin-top:4px; }');
-    w('.receipt-title { background:#F4C87A; color:#0d2e1c; text-align:center; padding:0.6rem; font-size:0.85rem; font-weight:800; letter-spacing:0.15em; text-transform:uppercase; }');
+    w('.receipt-title { background:#BE9346; color:#171F10; text-align:center; padding:0.6rem; font-size:0.85rem; font-weight:800; letter-spacing:0.15em; text-transform:uppercase; }');
     w('.body { padding:1.75rem; }');
     w('.receipt-no { text-align:right; font-size:0.78rem; color:#9ca3af; margin-bottom:1.25rem; }');
     w('.row { display:flex; justify-content:space-between; padding:0.65rem 0; border-bottom:1px solid #f3f4f6; font-size:0.88rem; }');
     w('.label { color:#6b7280; font-weight:500; }');
     w('.value { color:#1a2018; font-weight:600; }');
-    w('.amount-box { background:linear-gradient(135deg,#E8F5E0,#f0faf5); border:2px solid #1D9E75; border-radius:10px; padding:1.25rem; text-align:center; margin:1.25rem 0; }');
-    w('.amount-label { font-size:0.75rem; color:#5a7a6a; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.4rem; }');
-    w('.amount-value { font-size:2.2rem; font-weight:800; color:#1D9E75; }');
-    w('.paid-stamp { background:#1D9E75; color:white; font-size:1.1rem; font-weight:800; letter-spacing:0.2em; padding:0.5rem 1.5rem; border-radius:6px; display:inline-block; transform:rotate(-3deg); margin:0.5rem 0; }');
+    w('.amount-box { background:linear-gradient(135deg,#E7ECDA,#E7ECDA); border:2px solid #3E4A2A; border-radius:10px; padding:1.25rem; text-align:center; margin:1.25rem 0; }');
+    w('.amount-label { font-size:0.75rem; color:#6E7460; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:0.4rem; }');
+    w('.amount-value { font-size:2.2rem; font-weight:800; color:#3E4A2A; }');
+    w('.paid-stamp { background:#3E4A2A; color:white; font-size:1.1rem; font-weight:800; letter-spacing:0.2em; padding:0.5rem 1.5rem; border-radius:6px; display:inline-block; transform:rotate(-3deg); margin:0.5rem 0; }');
     w('.footer { border-top:2px dashed #e5e7eb; padding:1.25rem 1.75rem; text-align:center; }');
     w('.sig-line { border-top:1px solid #1a2018; width:160px; margin:0.5rem auto 0; }');
     w('.sig-label { font-size:0.75rem; color:#6b7280; margin-top:4px; }');
@@ -300,7 +322,7 @@ export default function StudentDashboard() {
   }
 
   if (loading) return (
-    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#0a2a1f,#1D9E75)" }}>
+    <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#171F10,#3E4A2A)" }}>
       <div style={{ textAlign: "center", color: "white" }}>
         <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🧘</div>
         <p style={{ opacity: 0.8, fontFamily: "serif", fontSize: "1.1rem" }}>Loading your practice...</p>
@@ -309,30 +331,38 @@ export default function StudentDashboard() {
   );
 
   const CSS = `
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Manrope:wght@400;500;600;700;800&display=swap');
     *{box-sizing:border-box;margin:0;padding:0;}
     body{background:#F2EDE6;}
-    .ya{font-family:'DM Sans',sans-serif;min-height:100vh;background:#F2EDE6;}
+    .ya{font-family:'Manrope',sans-serif;min-height:100vh;background:#F2EDE6;}
 
     /* Header */
-    .yh{background:linear-gradient(135deg,#0a2a1f 0%,#1a6b49 60%,#2d9e6e 100%);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+    .yh{position:sticky;top:0;z-index:150;background:linear-gradient(135deg,#171F10 0%,#2E3820 60%,#3E4A2A 100%);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
     .yh-l{display:flex;align-items:center;gap:1rem;}
+    .yh-r{display:flex;align-items:center;gap:0.6rem;}
     .yh-av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,255,0.3),rgba(255,255,255,0.1));display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;color:white;border:2px solid rgba(255,255,255,0.4);box-shadow:0 2px 8px rgba(0,0,0,0.2);}
-    .yh-name{font-family:'Playfair Display',serif;font-size:1.2rem;color:white;font-weight:700;letter-spacing:0.01em;}
+    .yh-name{font-family:'Fraunces',serif;font-size:1.2rem;color:white;font-weight:700;letter-spacing:0.01em;}
     .yh-sub{font-size:0.72rem;color:rgba(255,255,255,0.6);margin-top:2px;}
     .yh-date{font-size:0.7rem;color:rgba(255,255,255,0.5);margin-top:1px;}
-    .yh-out{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:7px 18px;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'DM Sans',sans-serif;transition:all 0.2s;letter-spacing:0.02em;}
+    .yh-out{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:white;padding:7px 18px;border-radius:20px;cursor:pointer;font-size:0.78rem;font-family:'Manrope',sans-serif;transition:all 0.2s;letter-spacing:0.02em;}
     .yh-out:hover{background:rgba(255,255,255,0.2);}
+    .yh-install{background:rgba(190,147,70,0.16);border:1px solid rgba(190,147,70,0.45);color:#EFE0BC;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;position:relative;}
+    .yh-install:hover{background:rgba(190,147,70,0.3);}
+    .yh-install-pop{position:absolute;top:calc(100% + 10px);right:0;background:white;border-radius:14px;padding:1rem 1.1rem;width:230px;box-shadow:0 16px 40px rgba(23,31,16,0.25);z-index:250;text-align:left;}
+    .yh-install-pop::before{content:'';position:absolute;top:-6px;right:14px;width:12px;height:12px;background:white;transform:rotate(45deg);}
+    .yh-install-pop .t{font-family:'Fraunces',serif;font-weight:700;font-size:0.9rem;color:#171F10;margin-bottom:0.4rem;}
+    .yh-install-pop .d{font-size:0.72rem;color:#6E7460;line-height:1.6;}
+    .yh-install-pop button.go{margin-top:0.7rem;width:100%;background:#3E4A2A;color:white;border:none;border-radius:9px;padding:0.55rem;font-size:0.78rem;font-weight:700;cursor:pointer;}
 
     /* Bottom Nav */
     .yt{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,0.06);display:flex;align-items:center;justify-content:space-around;padding:0.5rem 0.25rem calc(0.5rem + env(safe-area-inset-bottom));box-shadow:0 -4px 32px rgba(0,0,0,0.08);}
     .yt-btn{flex:1;border:none;background:transparent;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0.4rem 0.25rem;position:relative;transition:transform 0.2s;}
     .yt-btn:active{transform:scale(0.88);}
-    .yt-btn .ti{font-size:1.45rem;line-height:1;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1);}
-    .yt-btn.on .ti{transform:scale(1.18);}
-    .yt-btn .tl{font-family:'DM Sans',sans-serif;font-size:0.62rem;font-weight:600;color:#aaa;letter-spacing:0.02em;transition:all 0.2s;margin-top:1px;}
-    .yt-btn.on .tl{color:#1D9E75;font-weight:700;}
-    .yt-btn .t-pill{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:rgba(29,158,117,0.12);opacity:0;transition:opacity 0.25s;}
+    .yt-btn .ti{color:#aaa;line-height:1;transition:transform 0.25s cubic-bezier(0.34,1.56,0.64,1),color 0.2s;display:flex;}
+    .yt-btn.on .ti{transform:scale(1.1);color:#3E4A2A;}
+    .yt-btn .tl{font-family:'Manrope',sans-serif;font-size:0.62rem;font-weight:600;color:#aaa;letter-spacing:0.02em;transition:all 0.2s;margin-top:1px;}
+    .yt-btn.on .tl{color:#3E4A2A;font-weight:700;}
+    .yt-btn .t-pill{position:absolute;top:2px;left:50%;transform:translateX(-50%);width:36px;height:36px;border-radius:50%;background:rgba(62,74,42,0.12);opacity:0;transition:opacity 0.25s;}
     .yt-btn.on .t-pill{opacity:1;}
     .yt-badge{position:absolute;top:0;right:calc(50% - 18px);background:#EF4444;color:white;font-size:0.55rem;font-weight:800;min-width:15px;height:15px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 3px;border:2px solid white;}
 
@@ -347,32 +377,32 @@ export default function StudentDashboard() {
 
     /* Cards */
     .vc{background:white;border-radius:24px;padding:1.5rem;box-shadow:0 4px 24px rgba(0,0,0,0.06);margin-bottom:1.25rem;border:1px solid rgba(0,0,0,0.04);}
-    .vc-warm{background:linear-gradient(135deg,#FFFBF5,#FFF7ED);border-radius:24px;padding:1.5rem;margin-bottom:1.25rem;border:1.5px solid #FDDCAA;}
-    .vc-green{background:linear-gradient(135deg,#F0FAF4,#E8F5E0);border-radius:24px;padding:1.35rem 1.5rem;margin-bottom:1.25rem;border:1.5px solid #B8E0C8;}
+    .vc-warm{background:linear-gradient(135deg,#FFFBF5,#FFF7ED);border-radius:24px;padding:1.5rem;margin-bottom:1.25rem;border:1.5px solid #EFE0BC;}
+    .vc-green{background:linear-gradient(135deg,#E7ECDA,#E7ECDA);border-radius:24px;padding:1.35rem 1.5rem;margin-bottom:1.25rem;border:1.5px solid #E7ECDA;}
     .vc-amber{background:linear-gradient(135deg,#FFFBF0,#FFF8E6);border-radius:24px;padding:1.35rem 1.5rem;margin-bottom:1.25rem;border:2px solid #F59E0B;}
-    .vc-indigo{background:linear-gradient(135deg,#F8F7FF,#F0EEFF);border-radius:24px;padding:1.35rem 1.5rem;margin-bottom:1.25rem;border:1.5px solid #C4B5FD;}
-    .vc-dark{background:linear-gradient(135deg,#0a2a1f,#1a6b49);border-radius:24px;padding:1.5rem;margin-bottom:1.25rem;color:white;}
-    .vc-gold{background:linear-gradient(135deg,#7C5A2A,#C17F3A,#E8A84A);border-radius:24px;padding:1.5rem;margin-bottom:1.25rem;color:white;}
+    .vc-indigo{background:linear-gradient(135deg,#FAF6EC,#EFE0BC);border-radius:24px;padding:1.35rem 1.5rem;margin-bottom:1.25rem;border:1.5px solid #EFE0BC;}
+    .vc-dark{background:linear-gradient(135deg,#171F10,#2E3820);border-radius:24px;padding:1.5rem;margin-bottom:1.25rem;color:white;}
+    .vc-gold{background:linear-gradient(135deg,#93711F,#93711F,#BE9346);border-radius:24px;padding:1.5rem;margin-bottom:1.25rem;color:white;}
 
     /* Stats */
     .ys{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.25rem;}
     .ys-c{background:white;border-radius:20px;padding:1.25rem 0.75rem;text-align:center;border:1px solid #EAE4DC;box-shadow:0 2px 12px rgba(0,0,0,0.05);transition:transform 0.2s;}
     .ys-c:hover{transform:translateY(-2px);}
-    .ys-n{font-size:2.2rem;font-weight:800;color:#1D9E75;font-family:'Playfair Display',serif;line-height:1;}
+    .ys-n{font-size:2.2rem;font-weight:800;color:#3E4A2A;font-family:'Fraunces',serif;line-height:1;}
     .ys-l{font-size:0.62rem;color:#aaa;font-weight:600;margin-top:5px;text-transform:uppercase;letter-spacing:0.08em;}
 
     /* Progress bar */
     .yp{height:10px;background:#EAE4DC;border-radius:999px;overflow:hidden;}
-    .yp-f{height:100%;border-radius:999px;background:linear-gradient(90deg,#1D9E75,#4CC9A0,#88E0C0);transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
+    .yp-f{height:100%;border-radius:999px;background:linear-gradient(90deg,#3E4A2A,#8B9C6B,#E7ECDA);transition:width 0.8s cubic-bezier(0.4,0,0.2,1);}
 
     /* Day strip */
     .yds{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-bottom:1rem;}
     .yd{background:#F0EBE3;border-radius:8px;padding:5px 2px;text-align:center;font-size:0.58rem;color:#aaa;font-weight:600;transition:all 0.2s;}
-    .yd.yd-done{background:#C8E8D0;color:#0F6E56;}
-    .yd.yd-now{background:linear-gradient(135deg,#1D9E75,#4CC9A0);color:white;box-shadow:0 2px 8px rgba(29,158,117,0.4);}
+    .yd.yd-done{background:#E7ECDA;color:#202A15;}
+    .yd.yd-now{background:linear-gradient(135deg,#3E4A2A,#8B9C6B);color:white;box-shadow:0 2px 8px rgba(62,74,42,0.4);}
 
     /* Warmup tags */
-    .wt{display:inline-flex;align-items:center;background:linear-gradient(135deg,#FFF7ED,#FFFBF5);color:#92400E;font-size:0.72rem;padding:5px 12px;border-radius:20px;margin:3px;border:1px solid #FDDCAA;font-weight:500;transition:all 0.15s;}
+    .wt{display:inline-flex;align-items:center;background:linear-gradient(135deg,#FFF7ED,#FFFBF5);color:#92400E;font-size:0.72rem;padding:5px 12px;border-radius:20px;margin:3px;border:1px solid #EFE0BC;font-weight:500;transition:all 0.15s;}
     .wt:hover{background:#FFF0D6;transform:translateY(-1px);}
 
     /* Session step header */
@@ -382,25 +412,25 @@ export default function StudentDashboard() {
     /* Pose grid */
     .pg{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;}
     .pc{background:white;border-radius:16px;overflow:hidden;border:1px solid #EAE4DC;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
-    .pc:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.12);border-color:#B8E0C8;}
+    .pc:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.12);border-color:#E7ECDA;}
     .pc:active{transform:scale(0.97);}
     .pi{width:100%;height:85px;object-fit:contain;background:linear-gradient(135deg,#FAFAF8,#F5F5F2);display:block;}
     .pni{width:100%;height:85px;background:linear-gradient(135deg,#F3F4F6,#E9EAF0);display:flex;align-items:center;justify-content:center;font-size:1.8rem;}
     .pb{padding:0.5rem 0.65rem 0.6rem;}
     .ps{font-size:0.64rem;font-weight:700;color:#C0392B;margin-bottom:1px;line-height:1.3;}
     .pn{font-size:0.58rem;color:#aaa;font-style:italic;}
-    .pnum{font-size:0.55rem;font-weight:800;color:#1D9E75;margin-bottom:2px;}
+    .pnum{font-size:0.55rem;font-weight:800;color:#3E4A2A;margin-bottom:2px;}
 
     /* Pranayama */
     .pr{display:flex;align-items:center;gap:0.85rem;padding:0.75rem 0;border-bottom:1px solid #F0EBE3;}
     .pr:last-child{border-bottom:none;}
-    .prd{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#818CF8);flex-shrink:0;box-shadow:0 2px 4px rgba(99,102,241,0.3);}
+    .prd{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,#93711F,#BE9346);flex-shrink:0;box-shadow:0 2px 4px rgba(147,113,31,0.3);}
 
     /* Attendance grid */
     .ag{display:grid;grid-template-columns:repeat(5,1fr);gap:0.75rem;}
-    .adb{background:white;border:2px solid #EAE4DC;border-radius:18px;padding:0.85rem 0.4rem;cursor:pointer;text-align:center;transition:all 0.25s;font-family:'DM Sans',sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
+    .adb{background:white;border:2px solid #EAE4DC;border-radius:18px;padding:0.85rem 0.4rem;cursor:pointer;text-align:center;transition:all 0.25s;font-family:'Manrope',sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.04);}
     .adb:active{transform:scale(0.94);}
-    .adb.adone{background:linear-gradient(135deg,#1D9E75,#2DB887);border-color:#1D9E75;box-shadow:0 4px 16px rgba(29,158,117,0.3);}
+    .adb.adone{background:linear-gradient(135deg,#3E4A2A,#8B9C6B);border-color:#3E4A2A;box-shadow:0 4px 16px rgba(62,74,42,0.3);}
     .adb.atoday{border-color:#F59E0B;box-shadow:0 0 0 3px rgba(245,158,11,0.2);}
     .ade{font-size:1.2rem;}
     .adn{font-size:0.62rem;font-weight:700;color:#6b7280;margin-top:3px;}
@@ -413,9 +443,9 @@ export default function StudentDashboard() {
     .ms{background:white;border-radius:28px 28px 0 0;padding:2rem 1.5rem 3rem;width:100%;max-width:520px;animation:sUp 0.35s cubic-bezier(0.4,0,0.2,1);}
     @keyframes sUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
     .mr{display:flex;justify-content:space-around;margin-top:1.25rem;}
-    .mb{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:2.5px solid transparent;border-radius:16px;padding:12px 16px;cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;}
+    .mb{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:2.5px solid transparent;border-radius:16px;padding:12px 16px;cursor:pointer;transition:all 0.2s;font-family:'Manrope',sans-serif;}
     .mb:hover{background:#F5F0EA;border-color:#EAE4DC;transform:translateY(-2px);}
-    .mb.mp{background:#E8F5E0;border-color:#1D9E75;}
+    .mb.mp{background:#E7ECDA;border-color:#3E4A2A;}
     .me{font-size:2.2rem;}
     .ml{font-size:0.68rem;font-weight:600;color:#6b7280;}
 
@@ -423,11 +453,11 @@ export default function StudentDashboard() {
     .po{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:300;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(8px);}
     .pp{background:white;border-radius:28px;max-width:480px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 24px 80px rgba(0,0,0,0.3);animation:pIn 0.25s cubic-bezier(0.4,0,0.2,1);}
     @keyframes pIn{from{opacity:0;transform:scale(0.92)translateY(20px);}to{opacity:1;transform:scale(1)translateY(0);}}
-    .ppi{width:100%;height:230px;object-fit:contain;background:linear-gradient(135deg,#F9FAFB,#F0F5F2);border-radius:28px 28px 0 0;}
+    .ppi{width:100%;height:230px;object-fit:contain;background:linear-gradient(135deg,#F9FAFB,#E7ECDA);border-radius:28px 28px 0 0;}
     .ppb{padding:1.5rem;}
     .badge{font-size:0.72rem;font-weight:700;padding:4px 12px;border-radius:999px;display:inline-block;margin-right:5px;margin-bottom:5px;}
-    .bg{background:#E1F5EE;color:#1D9E75;}
-    .bi{background:#EEF2FF;color:#3730A3;}
+    .bg{background:#E7ECDA;color:#3E4A2A;}
+    .bi{background:#EFE0BC;color:#93711F;}
     .br{background:#FEF2F2;color:#DC2626;}
 
     /* History */
@@ -437,19 +467,19 @@ export default function StudentDashboard() {
     .hb{padding:1.1rem 1.35rem;border-top:1px solid #F0EBE3;background:#FAFAF8;}
 
     /* Buttons */
-    .btn-p{width:100%;padding:1rem;background:linear-gradient(135deg,#1D9E75,#2DB887);color:white;border:none;border-radius:16px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;margin-bottom:0.75rem;box-shadow:0 4px 16px rgba(29,158,117,0.3);letter-spacing:0.02em;}
-    .btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(29,158,117,0.4);}
-    .btn-w{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;padding:1rem;background:linear-gradient(135deg,#1ebc4a,#25D366);color:white;border:none;border-radius:16px;font-size:0.9rem;font-weight:700;cursor:pointer;text-decoration:none;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(37,211,102,0.3);transition:all 0.2s;}
+    .btn-p{width:100%;padding:1rem;background:linear-gradient(135deg,#3E4A2A,#8B9C6B);color:white;border:none;border-radius:16px;font-size:0.95rem;font-weight:700;cursor:pointer;font-family:'Manrope',sans-serif;transition:all 0.2s;margin-bottom:0.75rem;box-shadow:0 4px 16px rgba(62,74,42,0.3);letter-spacing:0.02em;}
+    .btn-p:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(62,74,42,0.4);}
+    .btn-w{display:flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;padding:1rem;background:linear-gradient(135deg,#3E4A2A,#25D366);color:white;border:none;border-radius:16px;font-size:0.9rem;font-weight:700;cursor:pointer;text-decoration:none;font-family:'Manrope',sans-serif;box-shadow:0 4px 16px rgba(37,211,102,0.3);transition:all 0.2s;}
     .btn-w:hover{transform:translateY(-1px);}
-    .btn-cert{background:linear-gradient(135deg,#7C5A2A,#C17F3A,#E8A84A);color:white;border:none;border-radius:16px;padding:1rem 1.5rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;box-shadow:0 4px 16px rgba(193,127,58,0.3);}
+    .btn-cert{background:linear-gradient(135deg,#93711F,#93711F,#BE9346);color:white;border:none;border-radius:16px;padding:1rem 1.5rem;font-size:0.9rem;font-weight:700;cursor:pointer;font-family:'Manrope',sans-serif;width:100%;box-shadow:0 4px 16px rgba(190,147,70,0.3);}
 
     /* Alert */
     .alert{background:linear-gradient(135deg,#FFFBF0,#FFF8E6);border:2px solid #F59E0B;border-radius:18px;padding:1rem 1.25rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:0.85rem;box-shadow:0 4px 16px rgba(245,158,11,0.15);}
 
     /* Typography helpers */
-    .serif{font-family:'Playfair Display',serif;}
+    .serif{font-family:'Fraunces',serif;}
     .muted{color:#aaa;}
-    .green{color:#1D9E75;}
+    .green{color:#3E4A2A;}
     .amber{color:#92400E;}
 
     /* Desktop-only wider pose grid */
@@ -490,39 +520,44 @@ export default function StudentDashboard() {
               <div className="yh-date">{today}</div>
             </div>
           </div>
-          <button className="yh-out" onClick={handleLogout}>Logout</button>
+          <div className="yh-r">
+            {!isAppInstalled && (
+              <div style={{ position: "relative" }}>
+                <button className="yh-install" onClick={() => setShowInstallPop(v => !v)} aria-label="Install app" title="Install app">⇩</button>
+                {showInstallPop && (
+                  <div className="yh-install-pop">
+                    <div className="t">Install Navira Yoga</div>
+                    <div className="d">Add the app to your home screen for quick, offline-ready access.</div>
+                    {installPrompt ? (
+                      <button className="go" onClick={handleInstall}>Install Now</button>
+                    ) : (
+                      <div className="d" style={{ marginTop: "0.6rem" }}>
+                        iPhone: tap Share → "Add to Home Screen"<br/>
+                        Android: tap ⋮ menu → "Add to Home Screen"
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            <button className="yh-out" onClick={handleLogout}>Logout</button>
+          </div>
         </div>
 
-        {/* ── INSTALL BANNER ── */}
-        {showInstall && (
-          <div style={{ margin:"0.75rem 1rem 0", background:"linear-gradient(135deg,#0a2a1f,#1D9E75)", borderRadius:"16px", padding:"0.85rem 1rem", display:"flex", alignItems:"center", justifyContent:"space-between", boxShadow:"0 4px 20px rgba(29,158,117,0.3)" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:"0.75rem" }}>
-              <img src="/logo.png" style={{ width:"36px", height:"36px", borderRadius:"50%", border:"2px solid rgba(255,255,255,0.3)" }} />
-              <div>
-                <div style={{ color:"white", fontWeight:700, fontSize:"0.85rem" }}>Install Navira Yoga App</div>
-                <div style={{ color:"rgba(255,255,255,0.65)", fontSize:"0.72rem" }}>Add to home screen for quick access</div>
-              </div>
-            </div>
-            <div style={{ display:"flex", gap:"0.5rem" }}>
-              <button onClick={() => setShowInstall(false)} style={{ background:"rgba(255,255,255,0.1)", border:"none", color:"rgba(255,255,255,0.6)", borderRadius:"8px", padding:"6px 10px", fontSize:"0.75rem", cursor:"pointer" }}>✕</button>
-              <button onClick={handleInstall} style={{ background:"#F4C87A", border:"none", color:"#0a2a1f", borderRadius:"8px", padding:"6px 14px", fontSize:"0.75rem", fontWeight:800, cursor:"pointer" }}>Install</button>
-            </div>
-          </div>
-        )}
 
         {/* ── BOTTOM NAV ── */}
         <div className="yt">
           {[
-            { id: "plan",     icon: "🏠", label: "Plan" },
-            { id: "practice", icon: "🧘", label: "Practice" },
-            { id: "attend",   icon: "📅", label: "Attend" },
-            { id: "history",  icon: "📚", label: "History" },
-            { id: "notes",    icon: "📝", label: "Notes" },
-            { id: "payments", icon: "💰", label: "Pay" },
+            { id: "plan",     label: "Plan" },
+            { id: "practice", label: "Practice" },
+            { id: "attend",   label: "Attend" },
+            { id: "history",  label: "History" },
+            { id: "notes",    label: "Notes" },
+            { id: "payments", label: "Pay" },
           ].map(t => (
             <button key={t.id} className={`yt-btn ${activeTab === t.id ? "on" : ""}`} onClick={() => setActiveTab(t.id)}>
               <span className="t-pill" />
-              <span className="ti">{t.icon}</span>
+              <span className="ti"><NavIcon id={t.id} /></span>
               <span className="tl">{t.label}{t.id === "notes" && unreadCount > 0 && <span className="yt-badge">{unreadCount}</span>}</span>
             </button>
           ))}
@@ -543,38 +578,6 @@ export default function StudentDashboard() {
 
           {/* ══════════ MY PLAN ══════════ */}
 
-          {/* ── GET THE APP CARD ── */}
-          {!isAppInstalled && (
-            <div style={{ background:"linear-gradient(135deg,#0a2a1f 0%,#1a6b49 60%,#2d9e6e 100%)", borderRadius:"20px", padding:"1.5rem", marginBottom:"1.25rem", boxShadow:"0 8px 32px rgba(29,158,117,0.25)", position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:"-30px", right:"-30px", width:"120px", height:"120px", borderRadius:"50%", background:"rgba(255,255,255,0.05)" }} />
-              <div style={{ position:"absolute", bottom:"-20px", left:"30%", width:"80px", height:"80px", borderRadius:"50%", background:"rgba(255,255,255,0.04)" }} />
-              <div style={{ display:"flex", alignItems:"center", gap:"1rem", marginBottom:"1rem" }}>
-                <img src="/logo.png" style={{ width:"48px", height:"48px", borderRadius:"50%", border:"2px solid rgba(244,200,122,0.5)" }} />
-                <div>
-                  <div style={{ color:"#F4C87A", fontWeight:800, fontSize:"1rem", fontFamily:"Playfair Display,serif" }}>Get the Navira Yoga App</div>
-                  <div style={{ color:"rgba(255,255,255,0.65)", fontSize:"0.75rem", marginTop:"2px" }}>Install for quick access anytime</div>
-                </div>
-              </div>
-              <div style={{ display:"flex", gap:"0.75rem", marginBottom:"1rem" }}>
-                {["📵 Works Offline","🔔 Notifications","⚡ Faster Access"].map(f => (
-                  <div key={f} style={{ background:"rgba(255,255,255,0.08)", borderRadius:"8px", padding:"4px 8px", fontSize:"0.65rem", color:"rgba(255,255,255,0.8)", fontWeight:600, whiteSpace:"nowrap" }}>{f}</div>
-                ))}
-              </div>
-              {installPrompt ? (
-                <button onClick={handleInstall} style={{ width:"100%", background:"#F4C87A", border:"none", color:"#0a2a1f", borderRadius:"12px", padding:"0.75rem", fontSize:"0.88rem", fontWeight:800, cursor:"pointer", letterSpacing:"0.02em" }}>
-                  📲 Install App Now
-                </button>
-              ) : (
-                <div style={{ background:"rgba(255,255,255,0.08)", borderRadius:"12px", padding:"0.75rem", textAlign:"center" }}>
-                  <div style={{ color:"white", fontSize:"0.8rem", fontWeight:600, marginBottom:"4px" }}>📱 Add to Home Screen</div>
-                  <div style={{ color:"rgba(255,255,255,0.55)", fontSize:"0.7rem" }}>
-                    iPhone: tap Share → "Add to Home Screen"<br/>
-                    Android: tap ⋮ menu → "Add to Home Screen"
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
           {activeTab === "plan" && (
             <>
               {currentPlan ? (
@@ -616,7 +619,7 @@ export default function StudentDashboard() {
                               {fmt(getPlanDates(currentPlan).start)} — {fmt(getPlanDates(currentPlan).end)}
                             </div>
                           </div>
-                          <span style={{ background: "linear-gradient(135deg,#E1F5EE,#C8E8D0)", color: "#0F6E56", fontSize: "0.72rem", fontWeight: 700, padding: "5px 14px", borderRadius: "20px", border: "1px solid #B8E0C8" }}>🟢 Active</span>
+                          <span style={{ background: "linear-gradient(135deg,#E7ECDA,#E7ECDA)", color: "#202A15", fontSize: "0.72rem", fontWeight: 700, padding: "5px 14px", borderRadius: "20px", border: "1px solid #E7ECDA" }}>🟢 Active</span>
                         </div>
 
                         {/* Day strip */}
@@ -636,7 +639,7 @@ export default function StudentDashboard() {
 
                         {/* Progress */}
                         <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.72rem", color: "#aaa", marginBottom: "7px" }}>
-                          <span>Your Progress</span><span style={{ fontWeight: 700, color: "#1D9E75" }}>{attendedCount}/10 days</span>
+                          <span>Your Progress</span><span style={{ fontWeight: 700, color: "#3E4A2A" }}>{attendedCount}/10 days</span>
                         </div>
                         <div className="yp"><div className="yp-f" style={{ width: `${attendedCount * 10}%` }} /></div>
                         <div style={{ fontSize: "0.72rem", color: "#aaa", marginTop: "6px", fontStyle: "italic" }}>
@@ -762,13 +765,13 @@ export default function StudentDashboard() {
                       {/* Pranayama */}
                       {getPranayamaPoses(currentPlan).length > 0 && (
                         <div className="vc">
-                          <div className="ssh" style={{ background: "linear-gradient(135deg,#F5F3FF,#EEF2FF)" }}>
-                            <div className="ssn" style={{ background: "linear-gradient(135deg,#6366F1,#818CF8)" }}>
+                          <div className="ssh" style={{ background: "linear-gradient(135deg,#EFE0BC,#EFE0BC)" }}>
+                            <div className="ssn" style={{ background: "linear-gradient(135deg,#93711F,#BE9346)" }}>
                               {(getWarmupPoses(currentPlan).length > 0 ? 1 : 0) + (showSurya(currentPlan) ? 1 : 0) + 2}
                             </div>
                             <div>
-                              <div style={{ fontWeight: 700, color: "#3730A3", fontSize: "0.95rem" }}>🌬️ Pranayama & Relaxation</div>
-                              <div style={{ fontSize: "0.7rem", color: "#6366F1" }}>Breathing · Cool down · Savasana</div>
+                              <div style={{ fontWeight: 700, color: "#93711F", fontSize: "0.95rem" }}>🌬️ Pranayama & Relaxation</div>
+                              <div style={{ fontSize: "0.7rem", color: "#93711F" }}>Breathing · Cool down · Savasana</div>
                             </div>
                           </div>
                           {getPranayamaPoses(currentPlan).map((p, i) => (
@@ -788,13 +791,13 @@ export default function StudentDashboard() {
                     <div>
                       {getPoses(currentPlan).length > 0 && (
                         <div className="vc">
-                          <div className="ssh" style={{ background: "linear-gradient(135deg,#E8F5E0,#F0FAF4)" }}>
-                            <div className="ssn" style={{ background: "linear-gradient(135deg,#1D9E75,#4CC9A0)" }}>
+                          <div className="ssh" style={{ background: "linear-gradient(135deg,#E7ECDA,#E7ECDA)" }}>
+                            <div className="ssn" style={{ background: "linear-gradient(135deg,#3E4A2A,#8B9C6B)" }}>
                               {(getWarmupPoses(currentPlan).length > 0 ? 1 : 0) + (showSurya(currentPlan) ? 1 : 0) + 1}
                             </div>
                             <div>
-                              <div style={{ fontWeight: 700, color: "#0F6E56", fontSize: "0.95rem" }}>🧘 Asanas</div>
-                              <div style={{ fontSize: "0.7rem", color: "#1D9E75" }}>Tap any pose for detailed instructions</div>
+                              <div style={{ fontWeight: 700, color: "#202A15", fontSize: "0.95rem" }}>🧘 Asanas</div>
+                              <div style={{ fontSize: "0.7rem", color: "#3E4A2A" }}>Tap any pose for detailed instructions</div>
                             </div>
                           </div>
                           <div className="pg">
@@ -845,7 +848,7 @@ export default function StudentDashboard() {
                       <div className="serif" style={{ fontSize: "1.1rem", fontWeight: 700, color: "white" }}>Your 10-Day Journey</div>
                       <div style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.6)", marginTop: "3px" }}>{attendedCount} of 10 days completed</div>
                     </div>
-                    <div className="serif" style={{ fontSize: "3rem", fontWeight: 800, color: "#4CC9A0" }}>{Math.round(attendedCount * 10)}%</div>
+                    <div className="serif" style={{ fontSize: "3rem", fontWeight: 800, color: "#8B9C6B" }}>{Math.round(attendedCount * 10)}%</div>
                   </div>
 
                   <div className="g2">
@@ -893,7 +896,7 @@ export default function StudentDashboard() {
                             const done = attendance[day];
                             return (
                               <div key={day} onClick={() => done && setMoodDay(day)}
-                                style={{ background: "white", borderRadius: "14px", padding: "0.65rem 0.4rem", border: `1.5px solid ${done ? "#FDDCAA" : "#EAE4DC"}`, textAlign: "center", cursor: done ? "pointer" : "default", opacity: done ? 1 : 0.4, transition: "all 0.2s", boxShadow: done ? "0 2px 8px rgba(0,0,0,0.06)" : "none" }}>
+                                style={{ background: "white", borderRadius: "14px", padding: "0.65rem 0.4rem", border: `1.5px solid ${done ? "#EFE0BC" : "#EAE4DC"}`, textAlign: "center", cursor: done ? "pointer" : "default", opacity: done ? 1 : 0.4, transition: "all 0.2s", boxShadow: done ? "0 2px 8px rgba(0,0,0,0.06)" : "none" }}>
                                 <div style={{ fontSize: "1.3rem" }}>{mood || (done ? "😐" : "—")}</div>
                                 <div style={{ fontSize: "0.58rem", color: "#aaa", fontWeight: 600, marginTop: "3px" }}>Day {day}</div>
                               </div>
@@ -918,7 +921,7 @@ export default function StudentDashboard() {
                         </div>
                       ) : (
                         <div className="vc-indigo">
-                          <div className="serif" style={{ fontSize: "1rem", fontWeight: 700, color: "#3730A3", marginBottom: "1rem" }}>💡 Practice Tips</div>
+                          <div className="serif" style={{ fontSize: "1rem", fontWeight: 700, color: "#93711F", marginBottom: "1rem" }}>💡 Practice Tips</div>
                           {[
                             "Practice at the same time each day",
                             "Even 20 minutes counts — mark your day",
@@ -926,8 +929,8 @@ export default function StudentDashboard() {
                             "Consistency matters more than perfection",
                             "Your mat is always waiting for you 🧘",
                           ].map((tip, i) => (
-                            <div key={i} style={{ display: "flex", gap: "0.6rem", marginBottom: "0.6rem", fontSize: "0.84rem", color: "#4338CA", alignItems: "flex-start" }}>
-                              <span style={{ color: "#818CF8", marginTop: "1px", flexShrink: 0 }}>✦</span>{tip}
+                            <div key={i} style={{ display: "flex", gap: "0.6rem", marginBottom: "0.6rem", fontSize: "0.84rem", color: "#93711F", alignItems: "flex-start" }}>
+                              <span style={{ color: "#BE9346", marginTop: "1px", flexShrink: 0 }}>✦</span>{tip}
                             </div>
                           ))}
                         </div>
@@ -967,7 +970,7 @@ export default function StudentDashboard() {
                         </div>
                         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                           <button onClick={e => { e.stopPropagation(); handlePrint(seq); }}
-                            style={{ background: "#F3F4F6", border: "1px solid #E5E7EB", borderRadius: "10px", padding: "6px 14px", fontSize: "0.75rem", cursor: "pointer", color: "#374151", fontFamily: "'DM Sans',sans-serif" }}>
+                            style={{ background: "#F3F4F6", border: "1px solid #E5E7EB", borderRadius: "10px", padding: "6px 14px", fontSize: "0.75rem", cursor: "pointer", color: "#374151", fontFamily: "'Manrope',sans-serif" }}>
                             🖨️ Print
                           </button>
                           <span style={{ color: "#aaa", fontSize: "1rem" }}>{expandedCycle === seq.id ? "▲" : "▼"}</span>
@@ -983,7 +986,7 @@ export default function StudentDashboard() {
                           )}
                           {getPoses(seq).length > 0 && (
                             <div style={{ marginBottom: "1rem" }}>
-                              <div style={{ fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#0F6E56", marginBottom: "0.75rem" }}>🧘 Asanas</div>
+                              <div style={{ fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#202A15", marginBottom: "0.75rem" }}>🧘 Asanas</div>
                               <div className="pg pg-hist">
                                 {getPoses(seq).map((pose, i) => {
                                   const imgSrc = getPoseImage(pose.sanskrit || pose.name);
@@ -1005,7 +1008,7 @@ export default function StudentDashboard() {
                           )}
                           {getPranayamaPoses(seq).length > 0 && (
                             <div>
-                              <div style={{ fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#3730A3", marginBottom: "0.5rem" }}>🌬️ Pranayama</div>
+                              <div style={{ fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", color: "#93711F", marginBottom: "0.5rem" }}>🌬️ Pranayama</div>
                               {getPranayamaPoses(seq).map((p, i) => (
                                 <div key={i} className="pr">
                                   <div className="prd" />
@@ -1043,7 +1046,7 @@ export default function StudentDashboard() {
                       }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
                         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-                          <span style={{ background: "#E1F5EE", color: "#0F6E56", fontSize: "11px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>Cycle {n.cycleNumber}</span>
+                          <span style={{ background: "#E7ECDA", color: "#202A15", fontSize: "11px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>Cycle {n.cycleNumber}</span>
                           <span style={{ fontSize: "0.75rem", color: "#aaa" }}>{new Date(n.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
                         </div>
                         {!n.isRead && <span style={{ background: "#FEE2E2", color: "#DC2626", fontSize: "10px", fontWeight: 700, padding: "3px 10px", borderRadius: "20px" }}>🔴 NEW</span>}
@@ -1078,7 +1081,7 @@ export default function StudentDashboard() {
                 ))}
               </div>
               <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
-                <button onClick={() => setMoodDay(null)} style={{ background: "none", border: "none", color: "#aaa", fontSize: "0.82rem", cursor: "pointer", fontFamily: "'DM Sans',sans-serif" }}>
+                <button onClick={() => setMoodDay(null)} style={{ background: "none", border: "none", color: "#aaa", fontSize: "0.82rem", cursor: "pointer", fontFamily: "'Manrope',sans-serif" }}>
                   Skip for now
                 </button>
               </div>
@@ -1130,9 +1133,9 @@ export default function StudentDashboard() {
                 )}
 
                 {(selectedPose.benefits || selectedPose.description) && (
-                  <div style={{ background: "linear-gradient(135deg,#E8F5E0,#F0FAF4)", borderRadius: "16px", padding: "1rem 1.1rem" }}>
-                    <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#0F6E56", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.06em" }}>✨ Benefits</div>
-                    <p style={{ fontSize: "0.85rem", color: "#0F6E56", lineHeight: 1.65 }}>{selectedPose.benefits || selectedPose.description}</p>
+                  <div style={{ background: "linear-gradient(135deg,#E7ECDA,#E7ECDA)", borderRadius: "16px", padding: "1rem 1.1rem" }}>
+                    <div style={{ fontSize: "0.7rem", fontWeight: 700, color: "#202A15", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.06em" }}>✨ Benefits</div>
+                    <p style={{ fontSize: "0.85rem", color: "#202A15", lineHeight: 1.65 }}>{selectedPose.benefits || selectedPose.description}</p>
                   </div>
                 )}
               </div>
@@ -1157,9 +1160,9 @@ export default function StudentDashboard() {
                     const total = myPayments.reduce((s, p) => s + p.amount, 0);
                     return (
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.75rem", marginBottom: "0.5rem" }}>
-                        <div style={{ background: "linear-gradient(135deg,#E8F5E0,#F0FAF4)", borderRadius: "14px", padding: "1rem", textAlign: "center", border: "1px solid #c8e6d8" }}>
-                          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "#1D9E75" }}>Rs.{paid.toLocaleString()}</div>
-                          <div style={{ fontSize: "0.7rem", color: "#5a7a6a", fontWeight: 600, marginTop: "3px", textTransform: "uppercase" }}>Paid</div>
+                        <div style={{ background: "linear-gradient(135deg,#E7ECDA,#E7ECDA)", borderRadius: "14px", padding: "1rem", textAlign: "center", border: "1px solid #E7ECDA" }}>
+                          <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "#3E4A2A" }}>Rs.{paid.toLocaleString()}</div>
+                          <div style={{ fontSize: "0.7rem", color: "#6E7460", fontWeight: 600, marginTop: "3px", textTransform: "uppercase" }}>Paid</div>
                         </div>
                         <div style={{ background: "#FEF2F2", borderRadius: "14px", padding: "1rem", textAlign: "center", border: "1px solid #fca5a5" }}>
                           <div style={{ fontSize: "1.3rem", fontWeight: 800, color: "#DC2626" }}>Rs.{due.toLocaleString()}</div>
@@ -1173,24 +1176,24 @@ export default function StudentDashboard() {
                     );
                   })()}
                   {myPayments.map(p => (
-                    <div key={p.id} style={{ background: "white", borderRadius: "14px", padding: "1rem 1.25rem", border: "1px solid #e8ede8", display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+                    <div key={p.id} style={{ background: "white", borderRadius: "14px", padding: "1rem 1.25rem", border: "1px solid #E7ECDA", display: "flex", justifyContent: "space-between", alignItems: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "0.85rem" }}>
-                        <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: p.status === "paid" ? "#E8F5E0" : "#FEF2F2", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>
+                        <div style={{ width: "42px", height: "42px", borderRadius: "50%", background: p.status === "paid" ? "#E7ECDA" : "#FEF2F2", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.2rem" }}>
                           {p.status === "paid" ? "✅" : "⏳"}
                         </div>
                         <div>
                           <div style={{ fontWeight: 700, fontSize: "0.92rem", color: "#1a2018" }}>{p.month} {p.year}</div>
                           {p.notes && <div style={{ fontSize: "0.78rem", color: "#6b7280", marginTop: "2px" }}>{p.notes}</div>}
-                          {p.paidAt && <div style={{ fontSize: "0.72rem", color: "#1D9E75", marginTop: "2px" }}>Paid on {new Date(p.paidAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</div>}
+                          {p.paidAt && <div style={{ fontSize: "0.72rem", color: "#3E4A2A", marginTop: "2px" }}>Paid on {new Date(p.paidAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</div>}
                         </div>
                       </div>
                       <div style={{ textAlign: "right" }}>
-                        <div style={{ fontSize: "1.1rem", fontWeight: 800, color: p.status === "paid" ? "#1D9E75" : "#DC2626" }}>Rs.{p.amount.toLocaleString()}</div>
-                        <div style={{ fontSize: "0.72rem", fontWeight: 600, padding: "2px 8px", borderRadius: "999px", background: p.status === "paid" ? "#E8F5E0" : "#FEF2F2", color: p.status === "paid" ? "#0F6E56" : "#DC2626", marginTop: "4px", display: "inline-block" }}>
+                        <div style={{ fontSize: "1.1rem", fontWeight: 800, color: p.status === "paid" ? "#3E4A2A" : "#DC2626" }}>Rs.{p.amount.toLocaleString()}</div>
+                        <div style={{ fontSize: "0.72rem", fontWeight: 600, padding: "2px 8px", borderRadius: "999px", background: p.status === "paid" ? "#E7ECDA" : "#FEF2F2", color: p.status === "paid" ? "#202A15" : "#DC2626", marginTop: "4px", display: "inline-block" }}>
                           {p.status === "paid" ? "Paid ✓" : "Due"}
                         </div>
                         {p.status === "paid" && (
-                          <button onClick={() => downloadReceipt(p)} style={{ display: "block", marginTop: "8px", background: "#1D9E75", border: "none", color: "white", borderRadius: "6px", padding: "5px 10px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer", width: "100%" }}>
+                          <button onClick={() => downloadReceipt(p)} style={{ display: "block", marginTop: "8px", background: "#3E4A2A", border: "none", color: "white", borderRadius: "6px", padding: "5px 10px", fontSize: "0.75rem", fontWeight: 700, cursor: "pointer", width: "100%" }}>
                             🧾 Receipt
                           </button>
                         )}

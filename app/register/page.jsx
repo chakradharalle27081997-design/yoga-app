@@ -54,12 +54,12 @@ export default function RegisterPage() {
   }
 
   if (submitted) return (
-    <div style={{ minHeight: "100vh", background: "#f0f7f4", display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+    <div style={{ minHeight: "100vh", background: "#E7ECDA", display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
       <div style={{ background: "white", borderRadius: "16px", padding: "2.5rem", maxWidth: "400px", width: "100%", textAlign: "center" }}>
         <div style={{ fontSize: "4rem", marginBottom: "1rem" }}>🙏</div>
-        <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1D9E75", marginBottom: "0.75rem" }}>Registration Submitted!</h1>
+        <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#3E4A2A", marginBottom: "0.75rem" }}>Registration Submitted!</h1>
         <p style={{ color: "#6b7280", fontSize: "0.9rem", marginBottom: "1rem" }}>Your instructor will review your details and contact you within 24 hours with your login details.</p>
-        <div style={{ background: "#E1F5EE", borderRadius: "10px", padding: "1rem", fontSize: "0.85rem", color: "#0F6E56" }}>
+        <div style={{ background: "#E7ECDA", borderRadius: "10px", padding: "1rem", fontSize: "0.85rem", color: "#202A15" }}>
           Your instructor will review your details and share your login PIN on WhatsApp at <strong>{form.phone}</strong>
         </div>
       </div>
@@ -67,27 +67,27 @@ export default function RegisterPage() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f0f7f4", padding: "1rem" }}>
+    <div style={{ minHeight: "100vh", background: "#E7ECDA", padding: "1rem" }}>
       <div style={{ maxWidth: "500px", margin: "0 auto" }}>
 
         <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
           <div style={{ fontSize: "2rem" }}>🧘</div>
-          <h1 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#1D9E75" }}>Navira Yoga Studio</h1>
+          <h1 style={{ fontSize: "1.4rem", fontWeight: 800, color: "#3E4A2A" }}>Navira Yoga Studio</h1>
           <p style={{ fontSize: "0.85rem", color: "#6b7280" }}>Student Registration</p>
         </div>
 
         <div style={{ marginBottom: "1.5rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
             {STEPS.map((s, i) => (
-              <div key={i} style={{ width: "32px", height: "32px", borderRadius: "50%", background: i <= step ? "#1D9E75" : "#e5e7eb", color: i <= step ? "white" : "#9ca3af", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700 }}>
+              <div key={i} style={{ width: "32px", height: "32px", borderRadius: "50%", background: i <= step ? "#3E4A2A" : "#e5e7eb", color: i <= step ? "white" : "#9ca3af", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: 700 }}>
                 {i < step ? "✓" : i + 1}
               </div>
             ))}
           </div>
           <div style={{ height: "4px", background: "#e5e7eb", borderRadius: "999px" }}>
-            <div style={{ height: "100%", background: "#1D9E75", borderRadius: "999px", width: `${(step / (STEPS.length - 1)) * 100}%`, transition: "width 0.3s" }} />
+            <div style={{ height: "100%", background: "#3E4A2A", borderRadius: "999px", width: `${(step / (STEPS.length - 1)) * 100}%`, transition: "width 0.3s" }} />
           </div>
-          <div style={{ textAlign: "center", marginTop: "0.5rem", fontSize: "0.8rem", color: "#1D9E75", fontWeight: 600 }}>
+          <div style={{ textAlign: "center", marginTop: "0.5rem", fontSize: "0.8rem", color: "#3E4A2A", fontWeight: 600 }}>
             Step {step + 1} of {STEPS.length} — {STEPS[step]}
           </div>
         </div>
@@ -132,7 +132,7 @@ export default function RegisterPage() {
                 </div>
               </div>
               {bmi() && (
-                <div style={{ background: "#E1F5EE", borderRadius: "8px", padding: "0.75rem", fontSize: "0.85rem", color: "#0F6E56", textAlign: "center" }}>
+                <div style={{ background: "#E7ECDA", borderRadius: "8px", padding: "0.75rem", fontSize: "0.85rem", color: "#202A15", textAlign: "center" }}>
                   BMI: <strong>{bmi()}</strong> — {parseFloat(bmi()) < 18.5 ? "Underweight" : parseFloat(bmi()) < 25 ? "Normal ✅" : parseFloat(bmi()) < 30 ? "Overweight" : "Obese"}
                 </div>
               )}
@@ -153,7 +153,7 @@ export default function RegisterPage() {
                 <label style={{ fontSize: "0.8rem", fontWeight: 600, color: "#374151", display: "block", marginBottom: "0.75rem" }}>What do you want to achieve? (Select all)</label>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                   {GOALS.map(g => (
-                    <button key={g} onClick={() => toggle("goals", g)} style={{ padding: "0.6rem 0.5rem", borderRadius: "8px", border: `2px solid ${form.goals.includes(g) ? "#1D9E75" : "#e5e7eb"}`, background: form.goals.includes(g) ? "#E1F5EE" : "white", color: form.goals.includes(g) ? "#0F6E56" : "#374151", fontSize: "0.75rem", fontWeight: form.goals.includes(g) ? 700 : 400, cursor: "pointer", textAlign: "left" }}>
+                    <button key={g} onClick={() => toggle("goals", g)} style={{ padding: "0.6rem 0.5rem", borderRadius: "8px", border: `2px solid ${form.goals.includes(g) ? "#3E4A2A" : "#e5e7eb"}`, background: form.goals.includes(g) ? "#E7ECDA" : "white", color: form.goals.includes(g) ? "#202A15" : "#374151", fontSize: "0.75rem", fontWeight: form.goals.includes(g) ? 700 : 400, cursor: "pointer", textAlign: "left" }}>
                       {form.goals.includes(g) ? "✅ " : ""}{g}
                     </button>
                   ))}
@@ -163,7 +163,7 @@ export default function RegisterPage() {
                 <label style={{ fontSize: "0.8rem", fontWeight: 600, color: "#374151", display: "block", marginBottom: "0.5rem" }}>Yoga Experience *</label>
                 <div style={{ display: "flex", gap: "0.5rem" }}>
                   {["beginner", "intermediate", "advanced"].map(e => (
-                    <button key={e} onClick={() => setForm(f => ({ ...f, experience: e }))} style={{ flex: 1, padding: "0.6rem", borderRadius: "8px", border: `2px solid ${form.experience === e ? "#1D9E75" : "#e5e7eb"}`, background: form.experience === e ? "#E1F5EE" : "white", color: form.experience === e ? "#0F6E56" : "#374151", fontSize: "0.8rem", fontWeight: form.experience === e ? 700 : 400, cursor: "pointer", textTransform: "capitalize" }}>
+                    <button key={e} onClick={() => setForm(f => ({ ...f, experience: e }))} style={{ flex: 1, padding: "0.6rem", borderRadius: "8px", border: `2px solid ${form.experience === e ? "#3E4A2A" : "#e5e7eb"}`, background: form.experience === e ? "#E7ECDA" : "white", color: form.experience === e ? "#202A15" : "#374151", fontSize: "0.8rem", fontWeight: form.experience === e ? 700 : 400, cursor: "pointer", textTransform: "capitalize" }}>
                       {e}
                     </button>
                   ))}
@@ -177,7 +177,7 @@ export default function RegisterPage() {
               <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "#1a2018" }}>🏥 Health Conditions</h2>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                 {CONDITIONS.map(c => (
-                  <button key={c} onClick={() => toggle("conditions", c)} style={{ padding: "0.6rem 0.5rem", borderRadius: "8px", border: `2px solid ${form.conditions.includes(c) ? "#1D9E75" : "#e5e7eb"}`, background: form.conditions.includes(c) ? "#E1F5EE" : "white", color: form.conditions.includes(c) ? "#0F6E56" : "#374151", fontSize: "0.75rem", cursor: "pointer", textAlign: "left" }}>
+                  <button key={c} onClick={() => toggle("conditions", c)} style={{ padding: "0.6rem 0.5rem", borderRadius: "8px", border: `2px solid ${form.conditions.includes(c) ? "#3E4A2A" : "#e5e7eb"}`, background: form.conditions.includes(c) ? "#E7ECDA" : "white", color: form.conditions.includes(c) ? "#202A15" : "#374151", fontSize: "0.75rem", cursor: "pointer", textAlign: "left" }}>
                     {form.conditions.includes(c) ? "✅ " : ""}{c}
                   </button>
                 ))}
@@ -189,8 +189,8 @@ export default function RegisterPage() {
                 </div>
               )}
               {(form.conditions.includes("Anxiety/Stress") || form.conditions.includes("Depression")) && (
-                <div style={{ background: "#F5F3FF", borderRadius: "10px", padding: "1rem", border: "1px solid #C4B5FD" }}>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 700, color: "#6D28D9", display: "block", marginBottom: "0.75rem" }}>🧠 Mental Health Details</label>
+                <div style={{ background: "#EFE0BC", borderRadius: "10px", padding: "1rem", border: "1px solid #EFE0BC" }}>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 700, color: "#93711F", display: "block", marginBottom: "0.75rem" }}>🧠 Mental Health Details</label>
                   <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                     <div style={{ display: "flex", gap: "0.5rem" }}>
                       <span style={{ fontSize: "0.75rem", color: "#374151", alignSelf: "center", minWidth: "100px" }}>On medication?</span>
@@ -211,7 +211,7 @@ export default function RegisterPage() {
                 <label style={{ fontSize: "0.8rem", fontWeight: 600, color: "#374151", display: "block", marginBottom: "0.5rem" }}>Family History</label>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
                   {["Diabetes", "Heart Disease", "High BP", "Thyroid", "Cancer", "Arthritis", "None"].map(f => (
-                    <button key={f} onClick={() => toggle("familyHistory", f)} style={{ padding: "0.5rem", borderRadius: "8px", border: `2px solid ${form.familyHistory.includes(f) ? "#1D9E75" : "#e5e7eb"}`, background: form.familyHistory.includes(f) ? "#E1F5EE" : "white", color: form.familyHistory.includes(f) ? "#0F6E56" : "#374151", fontSize: "0.75rem", cursor: "pointer" }}>
+                    <button key={f} onClick={() => toggle("familyHistory", f)} style={{ padding: "0.5rem", borderRadius: "8px", border: `2px solid ${form.familyHistory.includes(f) ? "#3E4A2A" : "#e5e7eb"}`, background: form.familyHistory.includes(f) ? "#E7ECDA" : "white", color: form.familyHistory.includes(f) ? "#202A15" : "#374151", fontSize: "0.75rem", cursor: "pointer" }}>
                       {form.familyHistory.includes(f) ? "✅ " : ""}{f}
                     </button>
                   ))}
@@ -301,7 +301,7 @@ export default function RegisterPage() {
                   <label style={{ fontSize: "0.8rem", fontWeight: 600, color: "#374151", display: "block", marginBottom: "0.5rem" }}>{label}</label>
                   <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                     {options.map(o => (
-                      <button key={o} onClick={() => setForm(f => ({ ...f, [field]: o }))} style={{ padding: "0.5rem 0.75rem", borderRadius: "8px", border: `2px solid ${form[field] === o ? "#1D9E75" : "#e5e7eb"}`, background: form[field] === o ? "#E1F5EE" : "white", color: form[field] === o ? "#0F6E56" : "#374151", fontSize: "0.75rem", fontWeight: form[field] === o ? 700 : 400, cursor: "pointer" }}>{o}</button>
+                      <button key={o} onClick={() => setForm(f => ({ ...f, [field]: o }))} style={{ padding: "0.5rem 0.75rem", borderRadius: "8px", border: `2px solid ${form[field] === o ? "#3E4A2A" : "#e5e7eb"}`, background: form[field] === o ? "#E7ECDA" : "white", color: form[field] === o ? "#202A15" : "#374151", fontSize: "0.75rem", fontWeight: form[field] === o ? 700 : 400, cursor: "pointer" }}>{o}</button>
                     ))}
                   </div>
                 </div>
@@ -338,7 +338,7 @@ export default function RegisterPage() {
                   </div>
                 ))}
               </div>
-              <div style={{ background: "#E1F5EE", borderRadius: "10px", padding: "1rem", marginTop: "1rem", fontSize: "0.8rem", color: "#0F6E56" }}>
+              <div style={{ background: "#E7ECDA", borderRadius: "10px", padding: "1rem", marginTop: "1rem", fontSize: "0.8rem", color: "#202A15" }}>
                 ✅ By submitting you confirm all information is accurate. Instructor will contact you within 24 hours.
               </div>
             </div>
@@ -350,9 +350,9 @@ export default function RegisterPage() {
             <button onClick={() => setStep(s => s - 1)} style={{ flex: 1, padding: "0.85rem", background: "white", color: "#374151", border: "2px solid #e5e7eb", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 600, cursor: "pointer" }}>← Back</button>
           )}
           {step < STEPS.length - 1 ? (
-            <button onClick={() => setStep(s => s + 1)} disabled={step === 0 && (!form.name || !form.age || !form.phone)} style={{ flex: 1, padding: "0.85rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 700, cursor: "pointer", opacity: step === 0 && (!form.name || !form.age || !form.phone) ? 0.5 : 1 }}>Next →</button>
+            <button onClick={() => setStep(s => s + 1)} disabled={step === 0 && (!form.name || !form.age || !form.phone)} style={{ flex: 1, padding: "0.85rem", background: "#3E4A2A", color: "white", border: "none", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 700, cursor: "pointer", opacity: step === 0 && (!form.name || !form.age || !form.phone) ? 0.5 : 1 }}>Next →</button>
           ) : (
-            <button onClick={handleSubmit} disabled={submitting} style={{ flex: 1, padding: "0.85rem", background: "#1D9E75", color: "white", border: "none", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 700, cursor: "pointer" }}>
+            <button onClick={handleSubmit} disabled={submitting} style={{ flex: 1, padding: "0.85rem", background: "#3E4A2A", color: "white", border: "none", borderRadius: "10px", fontSize: "0.95rem", fontWeight: 700, cursor: "pointer" }}>
               {submitting ? "Submitting..." : "🙏 Submit Registration"}
             </button>
           )}

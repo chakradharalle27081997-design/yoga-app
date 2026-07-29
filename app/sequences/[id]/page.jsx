@@ -11,8 +11,8 @@ const FOCUS = ["Full body", "Upper body", "Lower body", "Core", "Hips", "Back", 
 
 const PHASE_COLORS = {
   "Warm-up":   { bg: "#FFF7ED", border: "#F59E0B", label: "#92400E" },
-  "Asanas":    { bg: "#E1F5EE", border: "#1D9E75", label: "#0F6E56" },
-  "Pranayama": { bg: "#EEF2FF", border: "#6366F1", label: "#3730A3" },
+  "Asanas":    { bg: "#E7ECDA", border: "#3E4A2A", label: "#202A15" },
+  "Pranayama": { bg: "#EFE0BC", border: "#93711F", label: "#93711F" },
 };
 
 function AsanaPlanView({ seqData, sequence, onEdit, onPrint, asanaCount, setAsanaCount, onSaveCount }) {
@@ -131,7 +131,7 @@ function AsanaPlanView({ seqData, sequence, onEdit, onPrint, asanaCount, setAsan
                     <div style={{ fontSize: "11px", color: "var(--text-muted)", fontStyle: "italic", marginBottom: "6px" }}>{pose.name}</div>
 
                     {pose.modification && (
-                      <div style={{ fontSize: "11px", color: "#6366F1", marginTop: "4px", padding: "4px 8px", background: "#EEF2FF", borderRadius: "6px" }}>
+                      <div style={{ fontSize: "11px", color: "#93711F", marginTop: "4px", padding: "4px 8px", background: "#EFE0BC", borderRadius: "6px" }}>
                         ⚡ {pose.modification}
                       </div>
                     )}
@@ -156,20 +156,20 @@ function AsanaPlanView({ seqData, sequence, onEdit, onPrint, asanaCount, setAsan
           <div style={{ marginBottom: "1.5rem" }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
               {/* Recommended */}
-              <div style={{ background: "#E1F5EE", border: "1px solid #1D9E75", borderRadius: "10px", padding: "1rem 1.25rem" }}>
-                <div style={{ fontSize: "13px", fontWeight: 700, color: "#0F6E56", marginBottom: "10px" }}>🌬️ Recommended Pranayamas</div>
+              <div style={{ background: "#E7ECDA", border: "1px solid #3E4A2A", borderRadius: "10px", padding: "1rem 1.25rem" }}>
+                <div style={{ fontSize: "13px", fontWeight: 700, color: "#202A15", marginBottom: "10px" }}>🌬️ Recommended Pranayamas</div>
                 {recommended.length === 0 ? (
-                  <p style={{ fontSize: "13px", color: "#0F6E56" }}>Consult instructor for safe options</p>
+                  <p style={{ fontSize: "13px", color: "#202A15" }}>Consult instructor for safe options</p>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                     {recommended.map((p, i) => (
-                      <div key={i} style={{ background: "white", borderRadius: "8px", padding: "8px 10px", border: "1px solid #9FE1CB" }}>
+                      <div key={i} style={{ background: "white", borderRadius: "8px", padding: "8px 10px", border: "1px solid #E7ECDA" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "2px" }}>
-                          <span style={{ fontSize: "13px", fontWeight: 700, color: "#0F6E56" }}>{i + 1}. {p.name}</span>
-                          <span style={{ fontSize: "10px", color: "#1D9E75", fontStyle: "italic" }}>{p.sanskrit}</span>
+                          <span style={{ fontSize: "13px", fontWeight: 700, color: "#202A15" }}>{i + 1}. {p.name}</span>
+                          <span style={{ fontSize: "10px", color: "#3E4A2A", fontStyle: "italic" }}>{p.sanskrit}</span>
                         </div>
-                        <div style={{ fontSize: "11px", color: "#0F6E56", marginBottom: "2px" }}>{p.description}</div>
-                        <div style={{ fontSize: "11px", color: "#1D9E75", fontWeight: 600 }}>✅ {p.reason}</div>
+                        <div style={{ fontSize: "11px", color: "#202A15", marginBottom: "2px" }}>{p.description}</div>
+                        <div style={{ fontSize: "11px", color: "#3E4A2A", fontWeight: 600 }}>✅ {p.reason}</div>
                       </div>
                     ))}
                   </div>
