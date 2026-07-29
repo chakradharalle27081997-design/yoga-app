@@ -1,4 +1,4 @@
-const CACHE_NAME = 'navira-yoga-v2';
+const CACHE_NAME = 'navira-yoga-v3';
 const STATIC_ASSETS = ['/', '/student'];
 
 self.addEventListener('install', e => {
