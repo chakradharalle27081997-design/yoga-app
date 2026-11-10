@@ -287,7 +287,7 @@ export default function StudentDashboard() {
     w('</style></head><body onload="window.print()">');
     w('<div class="receipt">');
     w('<div class="header">');
-    w('<img src="https://navirayogastudent.vercel.app/logo.png" class="logo" alt="logo" />');
+    w('<img src="https://app.navirayoga.in/logo.png" class="logo" alt="logo" />');
     w('<div class="studio-name">Navira Yoga Studio</div>');
     w('<div class="studio-sub">Therapeutic Yoga · Hatha · Pranayama</div>');
     w('</div>');

@@ -33,7 +33,7 @@ const receiptFn = `
     win.document.write('</style></head><body onload="window.print()">');
     win.document.write('<div class="receipt">');
     win.document.write('<div class="header">');
-    win.document.write('<img src="https://navirayogastudent.vercel.app/logo.png" class="logo" alt="logo" />');
+    win.document.write('<img src="https://app.navirayoga.in/logo.png" class="logo" alt="logo" />');
     win.document.write('<div class="studio-name">Navira Yoga Studio</div>');
     win.document.write('<div class="studio-sub">Therapeutic Yoga · Hatha · Pranayama</div>');
     win.document.write('</div>');
